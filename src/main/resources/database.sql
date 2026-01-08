@@ -153,7 +153,6 @@ CREATE TABLE `jugador` (
 
 --
 -- Estructura de tabla para la tabla `noticia`
---https://github.com/rafaelaznar/gesportin.git
 
 CREATE TABLE `noticia` (
   `id` bigint NOT NULL,
