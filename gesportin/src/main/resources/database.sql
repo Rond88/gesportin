@@ -12,10 +12,10 @@ START TRANSACTION;
 SET time_zone = "+00:00";
 
 --
--- Base de datos: `esportin`
+-- Base de datos: `gesportin`
 --
-CREATE DATABASE IF NOT EXISTS `esportin` DEFAULT CHARACTER SET utf32 COLLATE utf32_unicode_ci;
-USE `esportin`;
+CREATE DATABASE IF NOT EXISTS `gesportin` DEFAULT CHARACTER SET utf32 COLLATE utf32_unicode_ci;
+USE `gesportin`;
 
 -- --------------------------------------------------------
 
