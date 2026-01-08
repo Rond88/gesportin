@@ -92,6 +92,14 @@ CREATE TABLE `categoria` (
   PRIMARY KEY(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci;
 
+CREATE TABLE `factura` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `fecha` datetime NOT NULL,
+  `id_usuario` bigint NOT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
 CREATE TABLE `partido` (
   `id` bigint NOT NULL,
   `nombre_rival` varchar(255) CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL,
@@ -138,3 +146,4 @@ ALTER TABLE `temporada`
   
   
 COMMIT;
+
