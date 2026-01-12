@@ -71,17 +71,5 @@ public class PagoApi {
         return ResponseEntity.ok(oPagoService.fill(cantidad));
     }
 
-    // -----
 
-    // abonar pago
-    @PutMapping("/abonar/{id}")
-    public ResponseEntity<Long> abonarPago(@PathVariable Long id) {
-        return ResponseEntity.ok(oPagoService.abonarPago(id));
-    }
-
-    // desabonar pago
-    @PutMapping("/desabonar/{id}")
-    public ResponseEntity<Long> desabonarPago(@PathVariable Long id) {
-        return ResponseEntity.ok(oPagoService.desabonarPago(id));
-    }
 }
