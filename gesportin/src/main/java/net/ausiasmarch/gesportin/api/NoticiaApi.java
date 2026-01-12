@@ -84,7 +84,7 @@ public class NoticiaApi {
     public ResponseEntity<Long> delete(@PathVariable Long id) {
         return ResponseEntity.ok(oNoticiaService.delete(id));
     }
-
+ 
     // vaciar tabla Noticia (solo administradores)
     @DeleteMapping("/empty")
     public ResponseEntity<Long> empty() {

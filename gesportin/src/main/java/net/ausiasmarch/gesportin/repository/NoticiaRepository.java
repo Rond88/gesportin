@@ -9,11 +9,6 @@ import net.ausiasmarch.gesportin.entity.NoticiaEntity;
 
 public interface NoticiaRepository extends JpaRepository<NoticiaEntity, Long> {
 
-    
-    Page<NoticiaEntity> findByPublicadoTrue(Pageable oPageable);
-
-    Page<NoticiaEntity> findByPublicadoFalse(Pageable oPageable);
-
-    NoticiaEntity findByIdAndPublicadoTrue(Long id);
+    Page<NoticiaEntity> findById(Long id, Pageable pageable);
 
 }

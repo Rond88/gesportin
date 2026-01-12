@@ -3,7 +3,7 @@ package net.ausiasmarch.gesportin.entity;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-
+ 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -36,14 +36,9 @@ public class NoticiaEntity {
     @NotNull
     @Size(min = 3)
     private String contenido;
-    @BooleanFlag
-    private Boolean publicado;
     @NotNull
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
-    private LocalDateTime fechaCreacion;
-    @Nullable
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
-    private LocalDateTime fechaModificacion;
+    private LocalDateTime fecha;
     @Lob
     private byte[] imagen;
     @NotNull
