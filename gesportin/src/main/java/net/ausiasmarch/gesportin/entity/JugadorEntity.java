@@ -13,33 +13,30 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "equipo")
+@Table(name = "jugador")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class EquipoEntity {
+public class JugadorEntity {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @NotNull
+    private long dorsal;
+    
+    @NotNull
     @Size(min = 3, max = 1024)
-    private String nombre;
+    private String posicion;
     
     @NotNull
-    private long id_club;
+    private long capitan;
     
     @NotNull
-    private long id_entrenador;
+    private String imagen;
     
     @NotNull
-    private long id_categoria;
-    
-    @NotNull
-    private long id_liga;
-    
-    @NotNull
-    private long id_temporada;
+    private long id_usuario;
 }

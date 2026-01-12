@@ -13,66 +13,66 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import net.ausiasmarch.gesportin.entity.EquipoEntity;
+import net.ausiasmarch.gesportin.entity.JugadorEntity;
 import net.ausiasmarch.gesportin.service.AleatorioService;
-import net.ausiasmarch.gesportin.service.EquipoService;
+import net.ausiasmarch.gesportin.service.JugadorService;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
-@RequestMapping("/equipo")
-public class EquipoApi {
+@RequestMapping("/jugador")
+public class JugadorApi {
     
     @Autowired
     AleatorioService oAleatorioService;
 
     @Autowired
-    EquipoService oEquipoService;
+    JugadorService oJugadorService;
 
-    // Obtener un equipo por su ID
+    // Obtener un jugador por su ID
     @GetMapping("/{id}")
-    public ResponseEntity<EquipoEntity> get(@PathVariable Long id) {
-        return ResponseEntity.ok(oEquipoService.get(id));
+    public ResponseEntity<JugadorEntity> get(@PathVariable Long id) {
+        return ResponseEntity.ok(oJugadorService.get(id));
     }
 
-    // Crear un equipo
+    // Crear un jugador
     @PostMapping("")
-    public ResponseEntity<Long> create(@RequestBody EquipoEntity oEquipoEntity) {
-        return ResponseEntity.ok(oEquipoService.create(oEquipoEntity));
+    public ResponseEntity<Long> create(@RequestBody JugadorEntity oJugadorEntity) {
+        return ResponseEntity.ok(oJugadorService.create(oJugadorEntity));
     }
 
-    // Modificar un equipo
+    // Modificar un jugador
     @PutMapping("")
-    public ResponseEntity<Long> update(@RequestBody EquipoEntity oEquipoEntity) {
-        return ResponseEntity.ok(oEquipoService.update(oEquipoEntity));
+    public ResponseEntity<Long> update(@RequestBody JugadorEntity oJugadorEntity) {
+        return ResponseEntity.ok(oJugadorService.update(oJugadorEntity));
     }
 
-    // Borrar un equipo
+    // Borrar un jugador
     @DeleteMapping("/{id}")
     public ResponseEntity<Long> delete(@PathVariable Long id) {
-        return ResponseEntity.ok(oEquipoService.delete(id));
+        return ResponseEntity.ok(oJugadorService.delete(id));
     }
 
     // Rellenar datos "fake"
     @GetMapping("/rellena/{numPosts}")
     public ResponseEntity<Long> creaEquipo(
             @PathVariable Long numPosts) {
-        return ResponseEntity.ok(oEquipoService.crearEquipo(numPosts));
+        return ResponseEntity.ok(oJugadorService.crearJugador(numPosts));
     }
 
     // Vaciar la tabla (solo para administradores)
     @DeleteMapping("/empty")
     public ResponseEntity<Long> empty() {
-        return ResponseEntity.ok(oEquipoService.empty());
+        return ResponseEntity.ok(oJugadorService.empty());
     }
 
-    // Listado paginado de equipos
+    // Listado paginado de jugador
     @GetMapping("")
-    public ResponseEntity<Page<EquipoEntity>> getPage(Pageable oPageable) {
-        return ResponseEntity.ok(oEquipoService.getPage(oPageable));
+    public ResponseEntity<Page<JugadorEntity>> getPage(Pageable oPageable) {
+        return ResponseEntity.ok(oJugadorService.getPage(oPageable));
     }
 
     @GetMapping("/count")
     public ResponseEntity<Long> count() {
-        return ResponseEntity.ok(oEquipoService.count());
+        return ResponseEntity.ok(oJugadorService.count());
     }
 }
