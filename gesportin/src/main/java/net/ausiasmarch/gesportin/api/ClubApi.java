@@ -74,7 +74,7 @@ public class ClubApi {
     }
 
     // FILL
-    @PostMapping("/fill/{amount}")
+    @GetMapping("/fill/{amount}")
     public void fill(@PathVariable int amount) {
         clubService.fill(amount);
     }
