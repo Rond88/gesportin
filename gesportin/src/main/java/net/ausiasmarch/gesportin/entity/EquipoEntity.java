@@ -22,6 +22,20 @@ public class EquipoEntity {
     @Size(min = 3, max = 1024)
     private String nombre;
     
+    @NotNull
+    private Long id_club;
+
+     @NotNull
+    private Long id_entrenador;
+
+     @NotNull
+    private Long id_categoria;
+
+     @NotNull
+    private Long id_liga;
+
+     @NotNull
+    private Long id_temporada;
     
 
     
