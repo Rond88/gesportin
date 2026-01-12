@@ -108,10 +108,10 @@ public class PartidoService {
             PartidoEntity oPartidoEntity = new PartidoEntity();
             String rival = alRivales.get(oAleatorioService.GenerarNumeroAleatorioEnteroEnRango(0, alRivales.size() - 1));
             oPartidoEntity.setNombre_rival(rival);
-            oPartidoEntity.setId_equipo(oAleatorioService.GenerarNumeroAleatorioEnteroEnRango(1, 20));
+            oPartidoEntity.setId_equipo(oAleatorioService.GenerarNumeroAleatorioEnteroEnRango(1, 50));
             oPartidoEntity.setLocal(oAleatorioService.GenerarNumeroAleatorioEnteroEnRango(0, 1) == 1);
-            int golesLocal = oAleatorioService.GenerarNumeroAleatorioEnteroEnRango(0, 5);
-            int golesVisitante = oAleatorioService.GenerarNumeroAleatorioEnteroEnRango(0, 5);
+            int golesLocal = oAleatorioService.GenerarNumeroAleatorioEnteroEnRango(0, 10);
+            int golesVisitante = oAleatorioService.GenerarNumeroAleatorioEnteroEnRango(0, 10);
             oPartidoEntity.setResultado(golesLocal + "-" + golesVisitante);
             oPartidoRepository.save(oPartidoEntity);
         }
