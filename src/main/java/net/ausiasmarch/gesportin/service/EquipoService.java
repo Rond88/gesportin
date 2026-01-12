@@ -1,7 +1,6 @@
 package net.ausiasmarch.gesportin.service;
 
 import java.util.ArrayList;
-import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,8 +12,6 @@ import net.ausiasmarch.gesportin.repository.EquipoRepository;
 
 @Service
 public class EquipoService {
-
-    Random azar = new Random();
 
     @Autowired
     EquipoRepository oEquipoRepository;
@@ -53,15 +50,15 @@ public class EquipoService {
             oEquipoEntity.setNombre(
                     equipos.get(oAleatorioService.GenerarNumeroAleatorioEnteroEnRango(0, equipos.size() - 1)));
             
-            oEquipoEntity.setId_club(azar.nextLong(1, 10));
+            oEquipoEntity.setId_club(oAleatorioService.GenerarNumeroAleatorioEnteroEnRango(1, 20));
 
-            oEquipoEntity.setId_entrenador(azar.nextLong(1, 10));
+            oEquipoEntity.setId_entrenador(oAleatorioService.GenerarNumeroAleatorioEnteroEnRango(1, 50));
 
-            oEquipoEntity.setId_categoria(azar.nextLong(1, 10));
+            oEquipoEntity.setId_categoria(oAleatorioService.GenerarNumeroAleatorioEnteroEnRango(1, 50));
 
-            oEquipoEntity.setId_liga(azar.nextLong(1, 10));
+            oEquipoEntity.setId_liga(oAleatorioService.GenerarNumeroAleatorioEnteroEnRango(1, 5));
 
-            oEquipoEntity.setId_temporada(azar.nextLong(1, 10));
+            oEquipoEntity.setId_temporada(oAleatorioService.GenerarNumeroAleatorioEnteroEnRango(1, 4));
             
             // Guardar la entidad en la base de datos
             oEquipoRepository.save(oEquipoEntity);
