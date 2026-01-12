@@ -59,4 +59,14 @@ public class ArticuloService {
         return id;
     }
 
+    public Long empty() {
+        articuloRepository.deleteAll();
+        articuloRepository.flush();
+        return 0L;
+    }
+
+    public Long count() {
+        return articuloRepository.count();
+    }
+
 }

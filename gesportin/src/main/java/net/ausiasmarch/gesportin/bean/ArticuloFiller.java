@@ -34,8 +34,8 @@ public class ArticuloFiller {
             "Marcador deportivo", "Pizarra táctica"
     };
 
-    public Long fill() {
-        for (int i = 0; i < 50; i++) {
+    public Long fill(Long cantidad) {
+        for (int i = 0; i < cantidad; i++) {
             ArticuloEntity articulo = new ArticuloEntity();
             articulo.setDescripcion(descripciones[i % descripciones.length] + " " + (i + 1));
             articulo.setPrecio(BigDecimal.valueOf(random.nextDouble() * 100 + 5).setScale(2, RoundingMode.HALF_UP));
@@ -45,7 +45,7 @@ public class ArticuloFiller {
 
             articuloRepository.save(articulo);
         }
-        return 50L;
+        return cantidad;
     }
 
 }
