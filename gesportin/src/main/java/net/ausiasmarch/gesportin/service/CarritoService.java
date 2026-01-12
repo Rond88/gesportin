@@ -32,20 +32,14 @@ public class CarritoService {
     }
 
     public Long create(CarritoEntity oCarritoEntity) {
-        if (!oSessionService.isSessionActive()) {
-            throw new UnauthorizedException("No hay sesion activa");
-        }
         oCarritoEntity.setId(null);
         oCarritoRepository.save(oCarritoEntity);
         return oCarritoEntity.getId();
     }
 
     public Long update(CarritoEntity oCarritoEntity) {
-        if (!oSessionService.isSessionActive()) {
-            throw new UnauthorizedException("No hay sesión activa");
-        }
         CarritoEntity existingCarrito = oCarritoRepository.findById(oCarritoEntity.getId())
-                .orElseThrow(() -> new EntityNotFoundException("No se puede actualizar: ID no encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("No se puede actualizar ID no encontrado"));
         existingCarrito.setCantidad(oCarritoEntity.getCantidad());
         existingCarrito.setId_articulo(oCarritoEntity.getId_articulo());
         existingCarrito.setId_usuario(oCarritoEntity.getId_usuario());
@@ -54,17 +48,14 @@ public class CarritoService {
     }
 
     public Long delete(Long id) {
-        if (!oSessionService.isSessionActive()) {
-            throw new UnauthorizedException("No active session");
+        if (!oCarritoRepository.existsById(id)) {
+            throw new EntityNotFoundException("ID no encontrado");
         }
         oCarritoRepository.deleteById(id);
         return id;
     }
 
     public Long fill(Long cantidad) {
-        if (!oSessionService.isSessionActive()) {
-            throw new UnauthorizedException("No hay sesión activa");
-        }
         for (long i = 0; i < cantidad; i++) {
             CarritoEntity oCarritoEntity = new CarritoEntity();
             oCarritoEntity.setCantidad(oAleatorioService.GenerarNumeroAleatorioEnteroEnRango(1, 50));
@@ -77,9 +68,6 @@ public class CarritoService {
     }
 
     public Long empty() {
-        if (!oSessionService.isSessionActive()) {
-            throw new UnauthorizedException("No active session");
-        }
         Long total = oCarritoRepository.count();
         oCarritoRepository.deleteAll();
         return total;
