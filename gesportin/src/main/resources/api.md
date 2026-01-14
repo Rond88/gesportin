@@ -4,7 +4,7 @@
 
 Gesportin es una API REST desarrollada con Spring Boot para la gestión integral de clubes deportivos. La aplicación permite administrar usuarios, equipos, jugadores, partidos, noticias, tienda online y gestión económica de los clubes.
 
-**URL Base**: `http://localhost:8080`
+**URL Base**: `http://localhost:8089`
 
 **CORS**: Habilitado para todos los orígenes (`*`)
 
@@ -2123,21 +2123,21 @@ Todas las fechas utilizan el formato: `yyyy-MM-dd HH:mm:ss`
 
 ```bash
 # 1. Login
-curl -X POST http://localhost:8080/session/login \
+curl -X POST http://localhost:8089/session/login \
   -H "Content-Type: application/json" \
   -d '{"username":"admin","password":"admin123"}'
 
 # Respuesta: {"token":"eyJhbGc..."}
 
 # 2. Usar el token en peticiones subsiguientes
-curl -X GET http://localhost:8080/usuario/1 \
+curl -X GET http://localhost:8089/usuario/1 \
   -H "Authorization: Bearer eyJhbGc..."
 ```
 
 ### Crear un Usuario Completo
 
 ```bash
-curl -X POST http://localhost:8080/usuario \
+curl -X POST http://localhost:8089/usuario \
   -H "Content-Type: application/json" \
   -d '{
     "nombre": "Pedro",
@@ -2155,13 +2155,13 @@ curl -X POST http://localhost:8080/usuario \
 ### Filtrar Artículos por Club
 
 ```bash
-curl -X GET "http://localhost:8080/articulo?idClub=1&page=0&size=10"
+curl -X GET "http://localhost:8089/articulo?idClub=1&page=0&size=10"
 ```
 
 ### Añadir Artículo al Carrito
 
 ```bash
-curl -X POST http://localhost:8080/carrito \
+curl -X POST http://localhost:8089/carrito \
   -H "Content-Type: application/json" \
   -d '{
     "cantidad": 2,
