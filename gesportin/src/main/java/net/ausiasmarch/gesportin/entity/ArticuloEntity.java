@@ -51,7 +51,8 @@ public class ArticuloEntity {
     @OneToMany(mappedBy = "Articulo", fetch = FetchType.LAZY)
     private java.util.List<CompraEntity> compras;
 
-    
+    @OneToMany(mappedBy = "id_articulo", fetch = FetchType.LAZY)
+    private java.util.List<CompraEntity> carritos;
    
 
 }
