@@ -31,6 +31,7 @@ public class CuotaEntity {
     @NotNull
     @Size(max=255)
     private String descripcion;
+
     @NotNull
     private BigDecimal cantidad;
 
