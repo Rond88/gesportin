@@ -40,7 +40,7 @@ public class CuotaService {
         existingCuota.setDescripcion(cuota.getDescripcion());
         existingCuota.setCantidad(cuota.getCantidad());
         existingCuota.setFecha(cuota.getFecha());
-        existingCuota.setEquipo(cuota.getEquipo());
+        existingCuota.setEquipo(cuota.getEquipo().getId());
         return oCuotaRepository.save(existingCuota);
     }
 
