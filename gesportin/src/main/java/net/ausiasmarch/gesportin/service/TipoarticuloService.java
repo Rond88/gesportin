@@ -41,7 +41,7 @@ public class TipoarticuloService {
         if (descripcion != null && !descripcion.isEmpty()) {
             return oTipoarticuloRepository.findByDescripcionContainingIgnoreCase(descripcion, pageable);
         } else if (idClub != null) {
-            return oTipoarticuloRepository.findByIdClub(idClub, pageable);
+            return oTipoarticuloRepository.findByClubId(idClub, pageable);
         } else {
             return oTipoarticuloRepository.findAll(pageable);
         }
