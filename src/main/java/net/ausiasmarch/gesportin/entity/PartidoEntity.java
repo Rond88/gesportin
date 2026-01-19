@@ -31,9 +31,9 @@ public class PartidoEntity {
     private String rival;
 
     @NotNull
-    @ManyToOne(fetch = FetchType. EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_liga")
-    private LigaEntity id_liga;
+    private LigaEntity liga;
 
     @NotNull
     @Column(nullable = false)
