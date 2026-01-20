@@ -39,13 +39,13 @@ public class CuotaService {
     }
 
     public CuotaEntity update(CuotaEntity oCuotaEntity) {
-        CuotaEntity existingCuota = oCuotaRepository.findById(oCuotaEntity.getId())
+        CuotaEntity oCuotaExistente = oCuotaRepository.findById(oCuotaEntity.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Cuota no encontrado con id: " + oCuotaEntity.getId()));
-        existingCuota.setDescripcion(oCuotaEntity.getDescripcion());
-        existingCuota.setCantidad(oCuotaEntity.getCantidad());
-        existingCuota.setFecha(oCuotaEntity.getFecha());
-        existingCuota.setEquipo(oEquipoService.get(oCuotaEntity.getEquipo().getId()));
-        return oCuotaRepository.save(existingCuota);
+        oCuotaExistente.setDescripcion(oCuotaEntity.getDescripcion());
+        oCuotaExistente.setCantidad(oCuotaEntity.getCantidad());
+        oCuotaExistente.setFecha(oCuotaEntity.getFecha());
+        oCuotaExistente.setEquipo(oEquipoService.get(oCuotaEntity.getEquipo().getId()));
+        return oCuotaRepository.save(oCuotaExistente);
     }
 
     public Long delete(Long id) {
