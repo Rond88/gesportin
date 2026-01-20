@@ -41,12 +41,12 @@ public class CarritoService {
     }
 
     public CarritoEntity update(CarritoEntity oCarritoEntity) {
-        CarritoEntity oExistingCarrito = oCarritoRepository.findById(oCarritoEntity.getId())
+        CarritoEntity oCarritoExistente = oCarritoRepository.findById(oCarritoEntity.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Carrito no encontrado con id: " + oCarritoEntity.getId()));
-        oExistingCarrito.setCantidad(oCarritoEntity.getCantidad());
-        oExistingCarrito.setArticulo(oArticuloService.get(oCarritoEntity.getArticulo().getId()));
-        oExistingCarrito.setUsuario(oUsuarioService.get(oCarritoEntity.getUsuario().getId()));
-        return oCarritoRepository.save(oExistingCarrito);
+        oCarritoExistente.setCantidad(oCarritoEntity.getCantidad());
+        oCarritoExistente.setArticulo(oArticuloService.get(oCarritoEntity.getArticulo().getId()));
+        oCarritoExistente.setUsuario(oUsuarioService.get(oCarritoEntity.getUsuario().getId()));
+        return oCarritoRepository.save(oCarritoExistente);
     }
 
     public Long delete(Long id) {
