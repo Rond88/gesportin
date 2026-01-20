@@ -1,7 +1,5 @@
 package net.ausiasmarch.gesportin.service;
 
-import java.util.Random;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,9 +16,7 @@ public class LigaService {
     private LigaRepository oLigaRepository;
 
     @Autowired
-    private EquipoService oEquipoService;
-
-    private final Random random = new Random();
+    private EquipoService oEquipoService;    
 
     private final String[] nombres = {
         "Liga Primera División", "Liga Segunda División", "Liga Tercera División", "Liga Regional",

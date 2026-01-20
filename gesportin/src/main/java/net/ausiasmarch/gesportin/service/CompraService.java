@@ -1,15 +1,11 @@
 package net.ausiasmarch.gesportin.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import net.ausiasmarch.gesportin.entity.ArticuloEntity;
 import net.ausiasmarch.gesportin.entity.CompraEntity;
-import net.ausiasmarch.gesportin.entity.FacturaEntity;
 import net.ausiasmarch.gesportin.exception.ResourceNotFoundException;
 import net.ausiasmarch.gesportin.repository.ArticuloRepository;
 import net.ausiasmarch.gesportin.repository.CompraRepository;
@@ -84,15 +80,15 @@ public class CompraService {
             compra.setCantidad(oAleatorioService.generarNumeroAleatorioEnteroEnRango(1, 50));
             Long totalArticulos = oArticuloRepository.count();
             if (totalArticulos > 0) {
-                List<ArticuloEntity> articulos = oArticuloRepository.findAll();
-                ArticuloEntity articulo = articulos.get(oAleatorioService.generarNumeroAleatorioEnteroEnRango(0, articulos.size() - 1));
+                //List<ArticuloEntity> articulos = oArticuloRepository.findAll();
+                //ArticuloEntity articulo = articulos.get(oAleatorioService.generarNumeroAleatorioEnteroEnRango(0, articulos.size() - 1));
                 compra.setArticulo(oArticuloService.getOneRandom());
                 //compra.setPrecio(articulo.getPrecio());
             }
             Long totalFacturas = oFacturaRepository.count();
             if (totalFacturas > 0) {
-                List<FacturaEntity> facturas = oFacturaRepository.findAll();
-                FacturaEntity factura = facturas.get(oAleatorioService.generarNumeroAleatorioEnteroEnRango(0, facturas.size() - 1));
+                //List<FacturaEntity> facturas = oFacturaRepository.findAll();
+                //FacturaEntity factura = facturas.get(oAleatorioService.generarNumeroAleatorioEnteroEnRango(0, facturas.size() - 1));
                 compra.setFactura(oFacturaService.getOneRandom());
             }
             oCompraRepository.save(compra);

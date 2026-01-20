@@ -16,9 +16,6 @@ public class EquipoService {
     private EquipoRepository oEquipoRepository;
 
     @Autowired
-    private AleatorioService oAleatorioService;
-
-    @Autowired
     private UsuarioService oUsuarioService;
 
     @Autowired
