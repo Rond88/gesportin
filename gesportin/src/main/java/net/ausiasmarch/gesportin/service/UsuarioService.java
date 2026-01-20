@@ -62,24 +62,28 @@ public class UsuarioService {
         }
     }
 
-    public UsuarioEntity create(UsuarioEntity usuario) {
-        usuario.setId(null);
-        return oUsuarioRepository.save(usuario);
+    public UsuarioEntity create(UsuarioEntity oUsuario) {
+        oUsuario.setId(null);
+        oUsuario.setTipousuario(oTipousuarioService.get(oUsuario.getTipousuario().getId()));
+        oUsuario.setClub(oClubService.get(oUsuario.getClub().getId()));
+        return oUsuarioRepository.save(oUsuario);
     }
 
-    public UsuarioEntity update(UsuarioEntity usuario) {
-        UsuarioEntity usuarioExistente = oUsuarioRepository.findById(usuario.getId())
+    public UsuarioEntity update(UsuarioEntity oUsuario) {
+        UsuarioEntity oUsuarioExistente = oUsuarioRepository.findById(usuario.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + usuario.getId()));
 
-        usuarioExistente.setNombre(usuario.getNombre());
-        usuarioExistente.setApellido1(usuario.getApellido1());
-        usuarioExistente.setApellido2(usuario.getApellido2());
-        usuarioExistente.setUsername(usuario.getUsername());
-        usuarioExistente.setPassword(usuario.getPassword());
-        usuarioExistente.setFechaAlta(usuario.getFechaAlta());
-        usuarioExistente.setGenero(usuario.getGenero());
-        usuarioExistente.setTipousuario(oTipousuarioService.getOneRandom());
-        usuarioExistente.setClub(oClubService.getOneRandom());
+        oUsuarioExistente.setNombre(usuario.getNombre());
+        oUsuarioExistente.setApellido1(usuario.getApellido1());
+        oUsuarioExistente.setApellido2(usuario.getApellido2());
+        oUsuarioExistente.setUsername(usuario.getUsername());
+        oUsuarioExistente.setPassword(usuario.getPassword());
+        oUsuarioExistente.setFechaAlta(usuario.getFechaAlta());
+        oUsuarioExistente.setGenero(usuario.getGenero());
+        oUsuarioExistente.setTipousuario(oTipousuarioService.get(oUsuario.getTipousuario().getId()));
+        oUsuarioExistente.setClub(oClubService.get(oUsuario.getClub().getId()));
+
+
 
         return oUsuarioRepository.save(usuarioExistente);
     }
