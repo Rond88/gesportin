@@ -29,7 +29,14 @@ public class PuntuacionService {
                 .orElseThrow(() -> new ResourceNotFoundException("Puntuación no encontrado con id: " + id));
     }
 
-    public Page<PuntuacionEntity> getPage(Pageable pageable) {
+    public Page<PuntuacionEntity> getPage(Pageable pageable, Long idNoticia, Long idUsuario) {
+        if (idNoticia != null && idUsuario != null) {
+            return oPuntuacionRepository.findByNoticiaIdAndUsuarioId(idNoticia, idUsuario, pageable);
+        } else if (idNoticia != null) {
+            return oPuntuacionRepository.findByNoticiaId(idNoticia, pageable);
+        } else if (idUsuario != null) {
+            return oPuntuacionRepository.findByUsuarioId(idUsuario, pageable);
+        }
         return oPuntuacionRepository.findAll(pageable);
     }
 
