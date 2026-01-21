@@ -49,7 +49,6 @@ public class JugadorService {
     public Page<JugadorEntity> getPage(
             Pageable pageable,
             String posicion,
-            Boolean capitan,
             Long idUsuario,
             Long idEquipo) {
 
