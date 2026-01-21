@@ -27,8 +27,16 @@ public class CuotaService {
                 .orElseThrow(() -> new ResourceNotFoundException("Cuota no encontrado con id: " + id));
     }
 
-    public Page<CuotaEntity> getPage(Pageable pageable) {
-        return oCuotaRepository.findAll(pageable);
+    
+
+    public Page<CuotaEntity> getPage(Pageable pageable, String descripcion, Long id_equipo) {
+        if (descripcion != null && !descripcion.isEmpty()) {
+            return oCuotaRepository.findByDescripcionContainingIgnoreCase(descripcion, pageable);
+        } else if (id_equipo != null) {
+            return oCuotaRepository.findByEquipoId(id_equipo, pageable);
+        } else {
+            return oCuotaRepository.findAll(pageable);
+        }
     }
 
     public CuotaEntity create(CuotaEntity oCuotaEntity) {
