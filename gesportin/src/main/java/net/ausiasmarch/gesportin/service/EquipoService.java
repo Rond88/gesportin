@@ -1,5 +1,7 @@
 package net.ausiasmarch.gesportin.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,8 +23,12 @@ public class EquipoService {
     @Autowired
     private CategoriaService oCategoriaService;
 
+    @Autowired
+    private AleatorioService oAleatorioService;
+
     public EquipoEntity get(Long id) {
-        return oEquipoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Equipo no encontrado con id: " + id));
+        return oEquipoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Equipo no encontrado con id: " + id));
     }
 
     public Page<EquipoEntity> getPage(Pageable pageable, String descripcion, Long id_categoria, Long id_usuario) {
@@ -74,7 +80,7 @@ public class EquipoService {
     public Long fill(Long cantidad) {
         for (int i = 0; i < cantidad; i++) {
             EquipoEntity oEquipo = new EquipoEntity();
-            oEquipo.setNombre("Equipo " + i);
+            oEquipo.setNombre(oAleatorioService.generarNombreEquipoAleatorio());
             oEquipo.setEntrenador(oUsuarioService.getOneRandom());
             oEquipo.setCategoria(oCategoriaService.getOneRandom());
             oEquipoRepository.save(oEquipo);
@@ -90,4 +96,17 @@ public class EquipoService {
         int index = (int) (Math.random() * count);
         return oEquipoRepository.findAll(Pageable.ofSize(1).withPage(index)).getContent().get(0);
     }
+
+    public EquipoEntity getOneRandomFromClub(Long ClubId) {
+        List<EquipoEntity> equipos = oEquipoRepository.getAllEquiposFromClub(ClubId);
+        if (equipos.isEmpty()) {
+            return null;
+        } else {
+            int index = oAleatorioService.generarNumeroAleatorioEnteroEnRango(0, equipos.size() - 1);
+            return equipos.get(index);
+        }
+    }
+
+
+    
 }

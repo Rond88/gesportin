@@ -16,19 +16,19 @@ public class LigaService {
     private LigaRepository oLigaRepository;
 
     @Autowired
-    private EquipoService oEquipoService;    
+    private EquipoService oEquipoService;
 
     private final String[] nombres = {
-        "Liga Primera División", "Liga Segunda División", "Liga Tercera División", "Liga Regional",
-        "Liga Provincial", "Liga Infantil", "Liga Juvenil", "Liga Cadete", "Liga Alevín", "Liga Benjamín",
-        "Liga Femenina", "Liga Masculina", "Liga Mixta", "Copa del Rey", "Copa de la Reina",
-        "Supercopa", "Liga de Campeones", "Liga Europa", "Torneo de Primavera", "Torneo de Verano",
-        "Torneo de Otoño", "Torneo de Invierno", "Liga Indoor", "Liga Outdoor", "Liga de Veteranos",
-        "Liga Amateur", "Liga Profesional", "Liga Semi-profesional", "Liga Escolar", "Liga Universitaria",
-        "Liga de Empresas", "Liga Comarcal", "Liga Autonómica", "Liga Nacional", "Liga Internacional",
-        "Copa Federación", "Trofeo Local", "Campeonato Regional", "Campeonato Nacional", "Campeonato Internacional",
-        "Liga de Leyendas", "Liga de Estrellas", "Liga de Promesas", "Liga de Talento", "Liga Elite",
-        "Liga Premier", "Liga Master", "Liga Challenger", "Liga Open", "Liga Clasificatoria"
+            "Liga", "Copa", "Supercopa", "Liga de Campeones", "Liga Europa", "Torneo",
+            "Trofeo", "Campeonato", "Playoff", "Liguilla Clasificatoria", "Liguilla Eliminatoria"
+    };
+
+    private final String[] nombres2 = {
+        "Primera División", "Segunda División", "Tercera División", "División de Honor",
+        "División de Plata", "División de Bronce", "Nacional", "Regional", "Provincial", "Local",
+        "Amateur", "de Campeones", "Outdoor", "Indoor", "de Verano", "de Invierno", 
+        "Internacional", "de Clubes", "de Selecciones", "de ascenso", "de descenso", "de élite",
+        "de Honor", "de Plata", "de Bronce"
     };
 
     public LigaEntity get(Long id) {
@@ -82,7 +82,9 @@ public class LigaService {
     public Long fill(Long cantidad) {
         for (int i = 0; i < cantidad; i++) {
             LigaEntity oLiga = new LigaEntity();
-            oLiga.setNombre(nombres[i % nombres.length] + " " + (i + 1));
+            String nombre = nombres[(int) (Math.random() * nombres.length)] + " " +
+                    nombres2[(int) (Math.random() * nombres2.length)];
+            oLiga.setNombre(nombre);
             oLiga.setEquipo(oEquipoService.getOneRandom());
             oLigaRepository.save(oLiga);
         }

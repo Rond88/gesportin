@@ -1,8 +1,5 @@
 package net.ausiasmarch.gesportin.service;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,10 +20,6 @@ public class PartidoService {
 
     @Autowired
     private LigaService oLigaService;
-
-    private final List<String> alRivales = Arrays.asList(
-            "Atlético", "Barcelona", "Real Madrid", "Sevilla", "Valencia", "Villarreal", "Betis",
-            "Real Sociedad", "Granada", "Celta", "Getafe", "Espanyol", "Mallorca", "Osasuna", "Alavés");
 
     public PartidoEntity get(Long id) {
         return oPartidoRepository.findById(id)
@@ -77,10 +70,8 @@ public class PartidoService {
 
     public Long fill(Long cantidad) {
         for (long j = 0; j < cantidad; j++) {
-            PartidoEntity oPartido = new PartidoEntity();
-            String rival = alRivales
-                    .get(oAleatorioService.generarNumeroAleatorioEnteroEnRango(0, alRivales.size() - 1));
-            oPartido.setRival(rival);
+            PartidoEntity oPartido = new PartidoEntity();            
+            oPartido.setRival(oAleatorioService.generarNombreEquipoAleatorio());
             oPartido.setLiga(oLigaService.getOneRandom());
             oPartido.setLocal(oAleatorioService.generarNumeroAleatorioEnteroEnRango(0, 1) == 1);
             int golesLocal = oAleatorioService.generarNumeroAleatorioEnteroEnRango(0, 10);

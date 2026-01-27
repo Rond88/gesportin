@@ -7,7 +7,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import net.ausiasmarch.gesportin.entity.EquipoEntity;
 import net.ausiasmarch.gesportin.entity.JugadorEntity;
+import net.ausiasmarch.gesportin.entity.UsuarioEntity;
 import net.ausiasmarch.gesportin.exception.ResourceNotFoundException;
 import net.ausiasmarch.gesportin.repository.JugadorRepository;
 
@@ -39,6 +41,20 @@ public class JugadorService {
         posiciones.add("Extremo derecho");
         posiciones.add("Extremo izquierdo");
         posiciones.add("Delantero centro");
+        posiciones.add("Zaguero");
+        posiciones.add("Medio melé");
+        posiciones.add("Ala");
+        posiciones.add("Pívot");
+        posiciones.add("Ala-pívot");
+        posiciones.add("Escolta");
+        posiciones.add("Base");
+        posiciones.add("Ala cerrado");
+        posiciones.add("Ala abierto");
+        posiciones.add("Líbero");
+        posiciones.add("Central");
+        posiciones.add("Apertura");
+        posiciones.add("Medio");
+        posiciones.add("Punta");
     }
 
     public JugadorEntity get(Long id) {
@@ -109,8 +125,14 @@ public class JugadorService {
                     posiciones.get(oAleatorioService.generarNumeroAleatorioEnteroEnRango(0, posiciones.size() - 1)));
             oJugador.setCapitan(oAleatorioService.generarNumeroAleatorioEnteroEnRango(0, 1) == 1);
             oJugador.setImagen(null);
-            oJugador.setUsuario(oUsuarioService.getOneRandom());
-            oJugador.setEquipo(oEquipoService.getOneRandom());
+            //
+            UsuarioEntity oUsuarioEntity = null;
+            while (oEquipoService.getOneRandomFromClub(oUsuarioEntity.getClub().getId()) == null) {
+                oUsuarioEntity = oUsuarioService.getOneRandom();
+            }            
+            oJugador.setUsuario(oUsuarioEntity);
+            EquipoEntity equipo = oEquipoService.getOneRandomFromClub(oUsuarioEntity.getClub().getId());
+            oJugador.setEquipo(equipo);
             oJugadorRepository.save(oJugador);
         }
         return cantidad;
