@@ -1,5 +1,6 @@
 import { Component, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { rpp as RPP, rpp } from '../../../environment/environment';
 import { EquipoService } from '../../../service/equipo';
 import { IEquipo } from '../../../model/equipo';
@@ -8,7 +9,7 @@ import { IPage } from '../../../model/plist';
 @Component({
   selector: 'app-plist-equipo',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './equipo-plist.html',
   styleUrls: ['./equipo-plist.css'],
 })
@@ -27,6 +28,10 @@ export class PlistEquipo {
 
   loading: boolean = false;
   error: string | null = null;
+  searchTerm: string = '';
+  // When true we assume the backend is doing the global filtering and
+  // page/total values returned by the server reflect the search.
+  serverSearchActive: boolean = false;
 
   ngOnInit() {
     this.loadPage();
@@ -35,7 +40,7 @@ export class PlistEquipo {
   loadPage(page: number = this.pageNumber) {
     this.loading = true;
     this.error = null;
-    this.equipoService.getPage(page, this.pageSize).subscribe({
+    this.equipoService.getPage(page, this.pageSize, 'id', 'asc', this.searchTerm).subscribe({
       next: (res: IPage<IEquipo>) => {
         this.aEquipos = res.content || [];
         this.pageNumber = res.number || 0;
@@ -50,6 +55,38 @@ export class PlistEquipo {
         this.error = err?.message || ('Error ' + err?.status || 'Unknown');
         console.error('Error cargando equipos', err);
       }
+    });
+  }
+
+  onSearch() {
+    // start search from first page
+    this.pageNumber = 0;
+    this.serverSearchActive = (String(this.searchTerm || '').trim().length > 0);
+    this.loadPage(0);
+  }
+
+  // Client-side filter for the current page results
+  getFilteredEquipos(): IEquipo[] {
+    // If server search is active we rely on the backend to return only the
+    // matching items for the current page, so we must not apply an extra
+    // client-side filter (it would shrink the shown rows and break paging).
+    if (this.serverSearchActive) {
+      return this.aEquipos;
+    }
+
+    const q = (this.searchTerm || '').toString().trim().toLowerCase();
+    if (!q) return this.aEquipos;
+    return this.aEquipos.filter((e: IEquipo) => {
+      const parts = [
+        (e.id ?? '').toString(),
+        e.nombre ?? '',
+        e.categoria?.nombre ?? '',
+        (e.categoria?.id ?? '').toString(),
+        e.entrenador?.nombre ?? '',
+        e.entrenador?.apellido1 ?? '',
+        (e.jugadores ?? '').toString()
+      ];
+      return parts.join(' ').toLowerCase().includes(q);
     });
   }
 

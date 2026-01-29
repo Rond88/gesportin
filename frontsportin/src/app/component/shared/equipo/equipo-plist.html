@@ -1,9 +1,22 @@
 <div class="plist-equipo container">
   <div class="card shadow-sm">
     <div class="card-header bg-light">
-      <div class="d-flex align-items-center top-bar">
-        <!-- paginador (izquierda) -->
-        <div class="top-pager me-3">
+      <!-- row 1: search (full width) -->
+      <div class="search-row mb-2">
+        <div class="d-flex justify-content-center">
+          <div class="input-group input-group-sm" style="max-width:720px; width:100%;">
+            <span class="input-group-text">🔍</span>
+            <input type="search" class="form-control" placeholder="Buscar por nombre, categoría, entrenador o id" [(ngModel)]="searchTerm" (keyup.enter)="onSearch()">
+            <button class="btn btn-outline-primary" type="button" (click)="onSearch()">Buscar</button>
+            <button class="btn btn-outline-secondary" type="button" (click)="(searchTerm=''); onSearch();">✖</button>
+          </div>
+        </div>
+          <small class="text-muted d-block mt-1 text-center">Total registros: <strong>{{totalElements || 0}}</strong> · Mostrando: <strong>{{aEquipos.length}}</strong></small>
+      </div>
+
+      <!-- row 2: controls (pagination left, rpp right) -->
+      <div class="d-flex align-items-center controls-row">
+        <div class="top-pager me-auto">
           <ul class="pagination pagination-sm mb-0">
             <li class="page-item" [class.disabled]="pageNumber==0">
               <button type="button" class="page-link btn btn-link p-0" (click)="onPageChange(pageNumber-1)">Previous</button>
@@ -19,13 +32,7 @@
           </ul>
         </div>
 
-        <!-- total (centro) -->
-        <div class="flex-fill text-center">
-          <small class="text-muted">Total registros: <strong>{{totalElements || 0}}</strong></small>
-        </div>
-
-        <!-- selector rpp (derecha) -->
-        <div class="rpp-btn">
+        <div class="rpp-btn ms-3">
           <div class="btn-group btn-group-sm" role="group" aria-label="Registros por página">
             <button type="button"
                     *ngFor="let size of rpp; let i = index"
@@ -57,7 +64,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let equipo of aEquipos; let i = index">
+            <tr *ngFor="let equipo of getFilteredEquipos(); let i = index">
               <td class="text-center align-middle">
                 <span class="badge id-badge">{{equipo.id}}</span>
               </td>

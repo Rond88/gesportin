@@ -12,6 +12,8 @@
   display: flex;
   gap: 0.75rem;
   align-items: center;
+  /* Layout: search on top, controls row below (keeps semantic HTML as-is) */
+  flex-direction: column;
 }
 
 .plist-equipo .top-pager {
@@ -21,7 +23,11 @@
 .plist-equipo .flex-fill {
   flex: 1 1 auto;
   text-align: center;
+  order: 1; /* put search first */
 }
+
+.plist-equipo .top-pager { order: 2; }
+.plist-equipo .rpp-btn { order: 3; }
 
 .plist-equipo .rpp-btn {
   flex: 0 0 auto;
@@ -35,6 +41,128 @@
   margin: 0;
   display: flex;
   gap: 0.18rem;
+  align-items: center;
+}
+
+/* Search input: full-width prominent bar like reference */
+.plist-equipo .card-header .input-group {
+  width: 100%;
+  box-shadow: none;
+  border-radius: 0.45rem;
+  overflow: hidden;
+}
+.plist-equipo .card-header .form-control {
+  border: 1px solid rgba(0,0,0,0.08);
+  padding: 0.6rem 0.75rem;
+  font-size: 0.95rem;
+}
+.plist-equipo .card-header .input-group-text {
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.06);
+  border-right: none;
+}
+.plist-equipo .card-header { padding: 1rem; }
+
+/* Table headers: bold and separated */
+.plist-equipo table thead th {
+  font-weight: 700;
+  background: #fff;
+  border-bottom: 2px solid rgba(0,0,0,0.06);
+  color: #222;
+}
+
+/* Row stripes and hover */
+.plist-equipo table tbody tr:nth-child(odd) { background: #fafafa; }
+.plist-equipo table tbody tr:hover { background: #f1f7ff; }
+
+/* Badges: light gray rounded like reference */
+.plist-equipo .id-badge,
+.plist-equipo .count-badge {
+  color: #212529 !important;
+  background-color: #f1f3f5 !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+  font-weight: 700;
+}
+
+/* Small adjustments to make layout like reference */
+.plist-equipo .card { box-shadow: none; }
+.plist-equipo .table { margin-bottom: 0; }
+
+/* Controls row tweaks */
+.plist-equipo .controls-row { padding-top: 0.25rem; }
+.plist-equipo .top-pager .pagination .page-item .page-link {
+  padding: 0.35rem 0.6rem;
+  border-radius: 0.35rem;
+  color: #0d6efd;
+}
+.plist-equipo .top-pager .pagination .page-item.active .page-link,
+.plist-equipo .top-pager .pagination .page-item .page-link:hover {
+  background: #e7f1ff;
+  color: #0b5ed7;
+}
+
+/* RPP buttons: larger, pill-like */
+.plist-equipo .rpp-btn .btn-group .btn {
+  min-width: 46px;
+  padding: 0.35rem 0.6rem;
+  border-radius: 0.45rem;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+.plist-equipo .rpp-btn .btn.active {
+  background: #0d6efd;
+  color: #fff;
+  box-shadow: none;
+}
+
+/* Search-row input tweaks */
+.plist-equipo .search-row .input-group .btn {
+  min-width: 72px;
+}
+.plist-equipo .search-row .input-group-text { font-size: 0.95rem; }
+
+/* Make pagination look like reference: gray bordered pills, blue active filled */
+.plist-equipo .top-pager .pagination { margin: 0; }
+.plist-equipo .top-pager .pagination .page-link {
+  background: #fff;
+  border: 1px solid #dee2e6;
+  color: #495057;
+  margin: 0 0.15rem;
+}
+.plist-equipo .top-pager .pagination .page-item:first-child .page-link,
+.plist-equipo .top-pager .pagination .page-item:last-child .page-link { padding-left:0.6rem; padding-right:0.6rem; }
+.plist-equipo .top-pager .pagination .page-item.active .page-link {
+  background: #0d6efd;
+  color: #fff;
+  border-color: #0d6efd;
+}
+
+/* RPP right-aligned with small gap and pill style */
+.plist-equipo .rpp-btn { display:flex; align-items:center; }
+.plist-equipo .rpp-btn .btn-group .btn { margin-left: 0.25rem; }
+.plist-equipo .rpp-btn .btn { background: #fff; color: #0d6efd; border: 1px solid #dee2e6; }
+.plist-equipo .rpp-btn .btn.active { background: #0d6efd; color: #fff; border-color: #0d6efd; }
+
+/* Center the small summary like the reference */
+.plist-equipo .search-row small { display:block; text-align:center; margin-top:0.5rem; color:#6c757d; }
+
+/* Table look: thin separators, consistent paddings, header bold */
+.plist-equipo table { border-collapse: separate; border-spacing: 0; }
+.plist-equipo table thead th { background: #fff; border-bottom: 2px solid #e9ecef; padding: 0.9rem 0.75rem; }
+.plist-equipo table tbody td { border-top: 1px solid #e9ecef; padding: 0.85rem 0.75rem; vertical-align: middle; }
+.plist-equipo table tbody tr:nth-child(odd) td { background: #fafafa; }
+.plist-equipo table tbody tr:hover td { background: #f8fbff; }
+
+/* ID and count badges: compact left-aligned like the screenshot */
+.plist-equipo .id-badge, .plist-equipo .count-badge { display:inline-block; padding:0.35rem 0.5rem; font-size:0.9rem; border-radius:0.35rem; }
+
+/* Make buttons in table (if any) compact and colorful - placeholder for actions column */
+.plist-equipo .btn-action { padding: 0.35rem 0.45rem; font-size:0.85rem; }
+
+/* Responsive tweaks: keep search centered and full width on small screens */
+@media (max-width: 576px) {
+  .plist-equipo .search-row .input-group { max-width: 100% !important; padding: 0 0.5rem; }
+  .plist-equipo .rpp-btn { margin-top:0.5rem; }
+  .plist-equipo .controls-row { flex-direction: column; align-items: stretch; gap:0.5rem; }
 }
 
 .plist-equipo .top-pager .page-item {
@@ -45,21 +173,22 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.28rem 0.5rem;
+  padding: 0.22rem 0.46rem;
   min-width: 30px;
-  border-radius: 0.45rem;
-  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 999px;
+  border: 1px solid rgba(13,110,253,0.12);
   background: #fff;
   color: var(--primary);
   font-weight: 600;
   margin: 0;
-  transition: background-color .12s ease, color .12s ease, box-shadow .12s ease;
+  transition: background-color .12s ease, color .12s ease, box-shadow .12s ease, transform .08s ease;
   cursor: pointer;
 }
 
 .plist-equipo .top-pager .page-link:hover {
   background: #e9f2ff;
   box-shadow: 0 6px 14px rgba(13,110,253,0.06);
+  transform: translateY(-1px);
 }
 
 .plist-equipo .top-pager .page-item.active .page-link {
