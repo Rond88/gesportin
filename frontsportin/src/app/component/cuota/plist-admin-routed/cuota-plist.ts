@@ -14,7 +14,7 @@ import { debounceTimeSearch } from '../../../environment/environment';
 
 @Component({
   selector: 'app-cuota-plist',
-  imports: [Paginacion, BotoneraRpp, DatetimePipe, RouterLink],
+imports: [Paginacion, BotoneraRpp, DatetimePipe, TrimPipe, RouterLink],
   templateUrl: './cuota-plist.html',
   styleUrl: './cuota-plist.css',
 })

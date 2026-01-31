@@ -1,9 +1,8 @@
 <div class="container my-2">
   <div class="d-flex justify-content-center my-3">
-    <h1>Lista de Cuotas</h1>
+    <h1>Listado de Cuotas</h1>
   </div>
 
-  <!-- Aviso (mensaje desde query Params)-->
   @if (message()) {
   <div class="d-flex justify-content-center my-2">
     <div class="alert alert-success w-100 text-center" role="alert">
@@ -18,17 +17,17 @@
       (input)="onSearchDescription($event.target.value)" [value]="descripcion()" name="searchDescription" />
 </div>
 }
-<!-- Total registros -->
 
+<!-- Total registros -->
 <div class="d-flex justify-content-center my-1">
   <small class="text-muted">Total registros: {{ totalRecords() || 0 }}</small>
   @if (equipo() > 0) {
   <small class="text-muted ms-3">Filtro: id de equipo = {{ equipo() }}</small>
   <!-- quitar el filtro -->
-  <a class="ms-2" [routedLink]="['/cuota']" role="button" title="Quitar filtro"><i class="bi bi-x-lg"
+  <a class="ms-2" [routerLink]="['/cuota']" role="button" title="Quitar filtro"><i class="bi bi-x-lg"
       aria-hidden="true"></i> Quitar filtro</a>
   }
-  @if (descripcion().length > 0 ) {
+  @if (descripcion().length > 0) {
   <small class="text-muted ms-3">Filtro: descripción contiene "{{ descripcion() }}"</small>
   <!-- quitar el filtro -->
   }
@@ -59,7 +58,7 @@
             }
           </span>
         </th>
-        <th scope="col" (click)="onOrder('descripcion')" style="cursor: pointer; width: 35%">
+        <th scope="col" (click)="onOrder('descripcion')" style="cursor: pointer; width: 25%">
           <span class="header-inline">Descripción
             @if (orderField() === 'descripcion') {
             @if (orderDirection() === 'asc') {
@@ -83,11 +82,11 @@
             }
           </span>
         </th>
-        <th scope="col" (click)="onOrder('fecha')" style="cursor: pointer; width: 10%">
+        <th scope="col" (click)="onOrder('fecha')" style="cursor: pointer; width: 15%">
           <span class="header-inline">Fecha
             @if (orderField() === 'fecha') {
             @if (orderDirection() === 'asc') {
-            <i class="bi bi-caret-up-fill ms-1" aria-hidden="true"></i>
+            <i class="bi bi-caret-up-fill ms-1"></i>
             }
             @if (orderDirection() === 'desc') {
             <i class="bi bi-caret-down-fill ms-1"></i>
@@ -95,7 +94,7 @@
             }
           </span>
         </th>
-        <th scope="col" (click)="onOrder('equipo')" style="cursor: pointer; width: 25%">
+        <th scope="col" (click)="onOrder('equipo')" style="cursor: pointer; width: 20%">
           <span class="header-inline">Equipo
             @if (orderField() === 'equipo') {
             @if (orderDirection() === 'asc') {
@@ -120,17 +119,16 @@
       <tr>
         <th scope="row" style="text-align: center">{{ oCuota.id }}</th>
         <td>{{ oCuota.descripcion }}</td>
-        <td style="text-align: right">{{ oCuota.cantidad }} </td>
-        <td style="text-align: center">{{ oCuota.fecha | datetime }}
-        </td>
+        <td style="text-align: right">{{ oCuota.cantidad }} €</td>
+        <td>{{ oCuota.fecha | datetime }}</td>
         <td>
           <a [routerLink]="['/equipo', '/view', oCuota.equipo.id]">
-            {{ oCuota.equipo.nombre| trim: 20 }}
+            {{ oCuota.equipo.nombre | trim: 20 }}
             {{ ' (' + oCuota.equipo.id + ')' }}
           </a>
           <!-- Botón alineado a la derecha para filtrar equipo -->
           <a class="btn btn-warning btn-sm ms-2 float-end" [routerLink]="['/cuota', oCuota.equipo.id]" role="button"
-            title="Editar"><i class="bi bi-funnel-fill" aria-hidden="true"></i></a>
+            title="Filtrar por equipo"><i class="bi bi-funnel-fill" aria-hidden="true"></i></a>
         </td>
         <td style="text-align: center">
           @if (oCuota.pagos === 0) {
@@ -147,8 +145,9 @@
               <a class="btn btn-primary btn-sm" [routerLink]="['/cuota/view', oCuota.id]" role="button" title="Ver"><i
                   class="bi bi-eye" aria-hidden="true"></i></a>
               <a class="btn btn-warning btn-sm" [routerLink]="['/cuota/edit', oCuota.id]" role="button"
-                title="Editar"><i class="bi bi-pencil" aria-hidden="true"></i></a>
-              <a class="btn btn-danger btn-sm" [routerLink]="['/cuota/delete', oCuota.id]" r role="button"
+                title="Editar"><i class="bi bi-pencil" aria-hidden="true"></i>
+              </a>
+              <a class="btn btn-danger btn-sm" [routerLink]="['/cuota/delete', oCuota.id]" role="button"
                 title="Eliminar"><i class="bi bi-trash" aria-hidden="true"></i></a>
             </div>
           </div>

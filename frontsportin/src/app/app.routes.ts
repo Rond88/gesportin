@@ -8,5 +8,5 @@ export const routes: Routes = [
     { path: 'articulo', component: ArticuloPlistAdminRouted},
     { path: 'articulo/:tipoarticulo', component: ArticuloPlistAdminRouted},
     { path: 'cuota', component: CuotaPlistAdminRouted},
-    { path: 'cuota/:tipoarticulo', component: CuotaPlistAdminRouted}
+    { path: 'cuota/:equipo', component: CuotaPlistAdminRouted}
 ];
