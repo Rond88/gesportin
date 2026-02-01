@@ -13,7 +13,7 @@
   }
 
   <!-- Búsqueda por descripción usando debounce -->
-  @if (tipocategoria() <= 0) {
+  @if (tipoarticulo() <= 0) {
     <div class="d-flex justify-content-center my-2">
       <input
         class="form-control me-2"
@@ -30,10 +30,10 @@
   <!-- Total registros -->
   <div class="d-flex justify-content-center my-1">
     <small class="text-muted">Total registros: {{ totalRecords() || 0 }}</small>
-    @if (tipocategoria() > 0) {
-      <small class="text-muted ms-3">Filtro: id de tipo de artículo = {{ tipocategoria() }}</small>
+    @if (tipoarticulo() > 0) {
+      <small class="text-muted ms-3">Filtro: id de tipo de artículo = {{ tipoarticulo() }}</small>
       <!-- quitar el filtro -->
-      <a class="ms-2" [routerLink]="['/categoria']" role="button" title="Quitar filtro"
+      <a class="ms-2" [routerLink]="['/articulo']" role="button" title="Quitar filtro"
         ><i class="bi bi-x-lg" aria-hidden="true"></i> Quitar filtro</a
       >
     }
@@ -113,10 +113,10 @@
               }
             </span>
           </th>
-          <th scope="col" (click)="onOrder('tipocategoria')" style="cursor: pointer; width: 25%">
+          <th scope="col" (click)="onOrder('tipoarticulo')" style="cursor: pointer; width: 25%">
             <span class="header-inline"
               >Tipo de Artículo
-              @if (orderField() === 'nombreTipoCategoria') {
+              @if (orderField() === 'nombreTipoArticulo') {
                 @if (orderDirection() === 'asc') {
                   <i class="bi bi-caret-up-fill ms-1" aria-hidden="true"></i>
                 }
@@ -141,58 +141,58 @@
         </tr>
       </thead>
       <tbody>
-        @for (oCategoria of oPage()?.content; track oCategoria.id) {
+        @for (oArticulo of oPage()?.content; track oArticulo.id) {
           <tr>
-            <th scope="row" style="text-align: center">{{ oCategoria.id }}</th>
-            <td>{{ oCategoria.descripcion }}</td>
-            <td style="text-align: right">{{ oCategoria.precio }} €</td>
+            <th scope="row" style="text-align: center">{{ oArticulo.id }}</th>
+            <td>{{ oArticulo.descripcion }}</td>
+            <td style="text-align: right">{{ oArticulo.precio }} €</td>
             <td style="text-align: right">
-              @if (oCategoria.descuento == null) {
+              @if (oArticulo.descuento == null) {
                 0 %
               } @else {
-                {{ oCategoria.descuento }} %
+                {{ oArticulo.descuento }} %
               }
             </td>
 
             <td>
-              <a [routerLink]="['/tipocategoria', '/view', oCategoria.tipocategoria.id]">
-                {{ oCategoria.tipocategoria.descripcion | trim: 20 }}
-                {{ ' (' + oCategoria.tipocategoria.id + ')' }}
+              <a [routerLink]="['/tipoarticulo', '/view', oArticulo.tipoarticulo.id]">
+                {{ oArticulo.tipoarticulo.descripcion | trim: 20 }}
+                {{ ' (' + oArticulo.tipoarticulo.id + ')' }}
               </a>
-              <!-- Botón alineado a la derecha para filtrar tipocategoria -->
+              <!-- Botón alineado a la derecha para filtrar tipoarticulo -->
               <a
                 class="btn btn-warning btn-sm ms-2 float-end"
-                [routerLink]="['/categoria', oCategoria.tipocategoria.id]"
+                [routerLink]="['/articulo', oArticulo.tipoarticulo.id]"
                 role="button"
                 title="Editar"
                 ><i class="bi bi-funnel-fill" aria-hidden="true"></i
               ></a>
             </td>
             <td style="text-align: center">
-              @if (oCategoria.comentarioarts === 0) {
+              @if (oArticulo.comentarioarts === 0) {
                 <i class="bi bi-ban" aria-hidden="true"></i> 
               } @else {
-                <a [routerLink]="['/comentarioart', oCategoria.id]">
-                  {{ oCategoria.comentarioarts }}
+                <a [routerLink]="['/comentarioart', oArticulo.id]">
+                  {{ oArticulo.comentarioarts }}
                 </a>
               }
             </td>
             <td style="text-align: center">
-              @if (oCategoria.compras === 0) {
+              @if (oArticulo.compras === 0) {
                 <!-- icono de vacío-->
                 <i class="bi bi-ban" aria-hidden="true"></i> 
               } @else {
-                <a [routerLink]="['/compra', oCategoria.id]">
-                  {{ oCategoria.compras }}
+                <a [routerLink]="['/compra', oArticulo.id]">
+                  {{ oArticulo.compras }}
                 </a>
               }
             </td>
             <td style="text-align: center">
-              @if (oCategoria.carritos === 0) {
+              @if (oArticulo.carritos === 0) {
                 <i class="bi bi-ban" aria-hidden="true"></i> 
               } @else {
-                <a [routerLink]="['/carrito', oCategoria.id]">
-                  {{ oCategoria.carritos }}
+                <a [routerLink]="['/carrito', oArticulo.id]">
+                  {{ oArticulo.carritos }}
                 </a>
               }
             </td>
@@ -201,21 +201,21 @@
                 <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
                   <a
                     class="btn btn-primary btn-sm"
-                    [routerLink]="['/categoria/view', oCategoria.id]"
+                    [routerLink]="['/articulo/view', oArticulo.id]"
                     role="button"
                     title="Ver"
                     ><i class="bi bi-eye" aria-hidden="true"></i
                   ></a>
                   <a
                     class="btn btn-warning btn-sm"
-                    [routerLink]="['/categoria/edit', oCategoria.id]"
+                    [routerLink]="['/articulo/edit', oArticulo.id]"
                     role="button"
                     title="Editar"
                     ><i class="bi bi-pencil" aria-hidden="true"></i
                   ></a>
                   <a
                     class="btn btn-danger btn-sm"
-                    [routerLink]="['/categoria/delete', oCategoria.id]"
+                    [routerLink]="['/articulo/delete', oArticulo.id]"
                     role="button"
                     title="Eliminar"
                     ><i class="bi bi-trash" aria-hidden="true"></i
