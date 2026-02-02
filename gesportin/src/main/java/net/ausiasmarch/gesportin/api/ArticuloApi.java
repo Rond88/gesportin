@@ -36,8 +36,8 @@ public class ArticuloApi {
     public ResponseEntity<Page<ArticuloEntity>> getPage(
             @PageableDefault(size = 1000) Pageable pageable,
             @RequestParam(required = false) String descripcion,
-            @RequestParam(required = false) Long tipoarticulo) {
-        return ResponseEntity.ok(oArticuloService.getPage(pageable, descripcion, tipoarticulo));
+            @RequestParam(required = false) Long id_tipoarticulo) {
+        return ResponseEntity.ok(oArticuloService.getPage(pageable, descripcion, id_tipoarticulo));
     }
 
     @PostMapping

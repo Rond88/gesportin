@@ -36,9 +36,9 @@ public class PagoApi {
     @GetMapping
     public ResponseEntity<Page<PagoEntity>> getPage(
             @PageableDefault(size = 1000) Pageable oPageable,
-            @RequestParam(required = false) Long idCuota,
-            @RequestParam(required = false) Long idJugador) {
-        return ResponseEntity.ok(oPagoService.getPage(oPageable, idCuota, idJugador));
+            @RequestParam(required = false) Long id_cuota,
+            @RequestParam(required = false) Long id_jugador) {
+        return ResponseEntity.ok(oPagoService.getPage(oPageable, id_cuota, id_jugador));
     }
 
     @PostMapping

@@ -35,9 +35,9 @@ public class CarritoApi {
     @GetMapping
     public ResponseEntity<Page<CarritoEntity>> getPage(
         @PageableDefault(size = 1000) Pageable oPageable,
-        @RequestParam(required = false) Long idUsuario,
-        @RequestParam(required = false) Long idArticulo) {
-        return ResponseEntity.ok(oCarritoService.getPage(oPageable, idUsuario, idArticulo));
+        @RequestParam(required = false) Long id_usuario,
+        @RequestParam(required = false) Long id_articulo) {
+        return ResponseEntity.ok(oCarritoService.getPage(oPageable, id_usuario, id_articulo));
     }
 
     @PostMapping

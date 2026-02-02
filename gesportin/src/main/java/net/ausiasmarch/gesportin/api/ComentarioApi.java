@@ -36,9 +36,9 @@ public class ComentarioApi {
     public ResponseEntity<Page<ComentarioEntity>> getPage(
             @PageableDefault(size = 1000) Pageable pageable,
             @RequestParam(required = false) String contenido,
-            @RequestParam(required = false) Long idUsuario,
-            @RequestParam(required = false) Long idNoticia) {
-        return ResponseEntity.ok(oComentarioService.getPage(pageable, contenido, idUsuario,  idNoticia));
+            @RequestParam(required = false) Long id_usuario,
+            @RequestParam(required = false) Long id_noticia) {
+        return ResponseEntity.ok(oComentarioService.getPage(pageable, contenido, id_usuario,  id_noticia));
     }
 
     @PostMapping

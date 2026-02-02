@@ -36,8 +36,8 @@ public class CuotaApi {
     public ResponseEntity<Page<CuotaEntity>> getPage(
             @PageableDefault(size = 1000) Pageable pageable,
             @RequestParam(required = false) String descripcion,
-            @RequestParam(required = false) Long idEquipo) {
-        return ResponseEntity.ok(oCuotaService.getPage(pageable, descripcion, idEquipo));
+            @RequestParam(required = false) Long id_equipo) {
+        return ResponseEntity.ok(oCuotaService.getPage(pageable, descripcion, id_equipo));
     }
 
     @PostMapping

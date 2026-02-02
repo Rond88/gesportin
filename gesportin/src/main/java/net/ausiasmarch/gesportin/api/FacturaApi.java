@@ -36,8 +36,8 @@ public class FacturaApi {
     @GetMapping
     public ResponseEntity<Page<FacturaEntity>> getPage(
         @PageableDefault(size = 1000) Pageable pageable,
-        @RequestParam(required = false) Long idUsuario) {
-        return ResponseEntity.ok(oFacturaService.getPage(pageable, idUsuario));
+        @RequestParam(required = false) Long id_usuario) {
+        return ResponseEntity.ok(oFacturaService.getPage(pageable, id_usuario));
     }
 
     @PostMapping
