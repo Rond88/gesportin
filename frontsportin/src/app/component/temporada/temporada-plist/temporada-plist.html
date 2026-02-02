@@ -1,6 +1,6 @@
 <div class="container my-2">
   <div class="d-flex justify-content-center my-3">
-    <h1>Lista de Artículos</h1>
+    <h1>Lista de Temporadas</h1>
   </div>
 
   <!-- Aviso (mensaje desde queryParams) -->
@@ -13,7 +13,7 @@
   }
 
   <!-- Búsqueda por descripción usando debounce -->
-  @if (tipoarticulo() <= 0) {
+  @if (club() <= 0) {
     <div class="d-flex justify-content-center my-2">
       <input
         class="form-control me-2"
@@ -30,16 +30,15 @@
   <!-- Total registros -->
   <div class="d-flex justify-content-center my-1">
     <small class="text-muted">Total registros: {{ totalRecords() || 0 }}</small>
-    @if (tipoarticulo() > 0) {
-      <small class="text-muted ms-3">Filtro: id de tipo de artículo = {{ tipoarticulo() }}</small>
+    @if (club() > 0) {
+      <small class="text-muted ms-3">Filtro: id de club = {{ club() }}</small>
       <!-- quitar el filtro -->
-      <a class="ms-2" [routerLink]="['/articulo']" role="button" title="Quitar filtro"
+      <a class="ms-2" [routerLink]="['/temporada']" role="button" title="Quitar filtro"
         ><i class="bi bi-x-lg" aria-hidden="true"></i> Quitar filtro</a
       >
     }
     @if (descripcion().length > 0) {
       <small class="text-muted ms-3">Filtro: descripción contiene "{{ descripcion() }}"</small>
-      <!-- quitar el filtro -->
     }
   </div>
 
@@ -87,10 +86,10 @@
               }
             </span>
           </th>
-          <th scope="col" (click)="onOrder('precio')" style="cursor: pointer; width: 10%">
+          <th scope="col" (click)="onOrder('club')" style="cursor: pointer; width: 30%">
             <span class="header-inline"
-              >Precio
-              @if (orderField() === 'precio') {
+              >Club
+              @if (orderField() === 'club') {
                 @if (orderDirection() === 'asc') {
                   <i class="bi bi-caret-up-fill ms-1" aria-hidden="true"></i>
                 }
@@ -100,23 +99,10 @@
               }
             </span>
           </th>
-          <th scope="col" (click)="onOrder('descuento')" style="cursor: pointer; width: 10%">
+          <th scope="col" (click)="onOrder('categorias')" style="cursor: pointer; width: 10%">
             <span class="header-inline"
-              >Descuento
-              @if (orderField() === 'descuento') {
-                @if (orderDirection() === 'asc') {
-                  <i class="bi bi-caret-up-fill ms-1" aria-hidden="true"></i>
-                }
-                @if (orderDirection() === 'desc') {
-                  <i class="bi bi-caret-down-fill ms-1" aria-hidden="true"></i>
-                }
-              }
-            </span>
-          </th>
-          <th scope="col" (click)="onOrder('tipoarticulo')" style="cursor: pointer; width: 25%">
-            <span class="header-inline"
-              >Tipo de Artículo
-              @if (orderField() === 'nombreTipoArticulo') {
+              >Categorias
+              @if (orderField() === 'Categoria') {
                 @if (orderDirection() === 'asc') {
                   <i class="bi bi-caret-up-fill ms-1" aria-hidden="true"></i>
                 }
@@ -127,95 +113,50 @@
             </span>
           </th>
           <th scope="col" style="width: 10%">
-            <span class="header-inline">Comentarios </span>
-          </th>
-          <th scope="col" style="width: 5%">
-            <span class="header-inline">Compras </span>
-          </th>
-          <th scope="col" style="width: 10%">
-            <span class="header-inline">Carritos </span>
-          </th>
-          <th scope="col">
             <span class="header-inline">Acciones </span>
           </th>
         </tr>
       </thead>
       <tbody>
-        @for (oArticulo of oPage()?.content; track oArticulo.id) {
+        @for (oTemporada of oPage()?.content; track oTemporada.id) {
           <tr>
-            <th scope="row" style="text-align: center">{{ oArticulo.id }}</th>
-            <td>{{ oArticulo.descripcion }}</td>
-            <td style="text-align: right">{{ oArticulo.precio }} €</td>
-            <td style="text-align: right">
-              @if (oArticulo.descuento == null) {
-                0 %
-              } @else {
-                {{ oArticulo.descuento }} %
-              }
-            </td>
-
+            <th scope="row" style="text-align: center">{{ oTemporada.id }}</th>
+            <td>{{ oTemporada.descripcion }}</td>
             <td>
-              <a [routerLink]="['/tipoarticulo', '/view', oArticulo.tipoarticulo.id]">
-                {{ oArticulo.tipoarticulo.descripcion | trim: 20 }}
-                {{ ' (' + oArticulo.tipoarticulo.id + ')' }}
+              <a [routerLink]="['/club', '/view', oTemporada.club.id]">
+                {{ oTemporada.club.nombre | trim: 20 }}
+                {{ ' (' + oTemporada.club.id + ')' }}
               </a>
-              <!-- Botón alineado a la derecha para filtrar tipoarticulo -->
+              <!-- Botón alineado a la derecha para filtrar club -->
               <a
                 class="btn btn-warning btn-sm ms-2 float-end"
-                [routerLink]="['/articulo', oArticulo.tipoarticulo.id]"
+                [routerLink]="['/temporada', oTemporada.club.id]"
                 role="button"
-                title="Editar"
+                title="Filtrar por club"
                 ><i class="bi bi-funnel-fill" aria-hidden="true"></i
               ></a>
             </td>
-            <td style="text-align: center">
-              @if (oArticulo.comentarioarts === 0) {
-                <i class="bi bi-ban" aria-hidden="true"></i> 
-              } @else {
-                <a [routerLink]="['/comentarioart', oArticulo.id]">
-                  {{ oArticulo.comentarioarts }}
-                </a>
-              }
-            </td>
-            <td style="text-align: center">
-              @if (oArticulo.compras === 0) {
-                <!-- icono de vacío-->
-                <i class="bi bi-ban" aria-hidden="true"></i> 
-              } @else {
-                <a [routerLink]="['/compra', oArticulo.id]">
-                  {{ oArticulo.compras }}
-                </a>
-              }
-            </td>
-            <td style="text-align: center">
-              @if (oArticulo.carritos === 0) {
-                <i class="bi bi-ban" aria-hidden="true"></i> 
-              } @else {
-                <a [routerLink]="['/carrito', oArticulo.id]">
-                  {{ oArticulo.carritos }}
-                </a>
-              }
-            </td>
+            <td style="text-align: center">{{ oTemporada.categorias }}</td>
             <td>
               <div class="d-flex justify-content-center">
                 <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
                   <a
                     class="btn btn-primary btn-sm"
-                    [routerLink]="['/articulo/view', oArticulo.id]"
+                    [routerLink]="['/temporada/view', oTemporada.id]"
                     role="button"
                     title="Ver"
                     ><i class="bi bi-eye" aria-hidden="true"></i
                   ></a>
                   <a
                     class="btn btn-warning btn-sm"
-                    [routerLink]="['/articulo/edit', oArticulo.id]"
+                    [routerLink]="['/temporada/edit', oTemporada.id]"
                     role="button"
                     title="Editar"
                     ><i class="bi bi-pencil" aria-hidden="true"></i
                   ></a>
                   <a
                     class="btn btn-danger btn-sm"
-                    [routerLink]="['/articulo/delete', oArticulo.id]"
+                    [routerLink]="['/temporada/delete', oTemporada.id]"
                     role="button"
                     title="Eliminar"
                     ><i class="bi bi-trash" aria-hidden="true"></i
