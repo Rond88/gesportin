@@ -18,6 +18,8 @@ import { TipousuarioPlistAdminRouted } from './component/tipousario/plist-admin-
 import { TemporadaPlist } from './component/temporada/temporada-plist/temporada-plist';
 import { PlistEquipo } from './component/shared/equipo/equipo-plist';
 import { ViewAdminRouted } from './component/noticia/view-admin-routed/view-admin-routed';
+import { PlistEquipo } from './component/equipo/equipo-plist';
+
 
 export const routes: Routes = [
     
@@ -26,6 +28,7 @@ export const routes: Routes = [
     { path: 'usuario/tipousuario/:tipousuario', component: UsuarioPlist },
     { path: 'usuario/rol/:rol', component: UsuarioPlist },
     { path: 'usuario/club/:club', component: UsuarioPlist },
+    { path: 'usuario/view/:id', component: UsuarioViewRouted},
     { path: 'temporada', component: TemporadaPlist },
     { path: 'temporada/:club', component: TemporadaPlist },
     { path: 'liga', component: LigaPlistAdminRouted },
@@ -49,6 +52,7 @@ export const routes: Routes = [
     { path: 'noticia/:club', component: NoticiaPlistAdminRouted},
     { path: 'noticia/:id', component: ViewAdminRouted },
     { path: 'club/plist', component: ClubPlistAdminRouted},
+    { path: 'club', component: ClubPlistAdminRouted},
     { path: 'cuota', component: CuotaPlistAdminRouted},
     { path: 'cuota/:equipo', component: CuotaPlistAdminRouted},
     { path: 'tipousuario', component: TipousuarioPlistAdminRouted},
