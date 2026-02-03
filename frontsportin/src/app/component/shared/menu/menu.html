@@ -18,9 +18,8 @@
         <li class="nav-item">
           <a
             class="nav-link"
-            [class.active]="
-              activeRoute === '/' || activeRoute === '/home' || activeRoute.startsWith('/home')
-            "
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
             aria-current="page"
             [routerLink]="['/']"
             title="Home"
@@ -33,7 +32,7 @@
         <li class="nav-item">
           <a
             class="nav-link"
-            [class.active]="activeRoute === '/club' || activeRoute.startsWith('/club')"
+            routerLinkActive="active"
             [routerLink]="['/club']"
             title="Clubes"
           >
@@ -45,7 +44,7 @@
         <li class="nav-item">
           <a
             class="nav-link"
-            [class.active]="activeRoute === '/noticia' || activeRoute.startsWith('/noticia')"
+            routerLinkActive="active"
             [routerLink]="['/noticia']"
             title="Noticias"
           >
@@ -57,7 +56,7 @@
         <li class="nav-item">
           <a
             class="nav-link"
-            [class.active]="activeRoute === '/comentario' || activeRoute.startsWith('/comentario')"
+            routerLinkActive="active"
             [routerLink]="['/comentario']"
             title="Comentarios"
           >
@@ -69,7 +68,7 @@
         <li class="nav-item">
           <a
             class="nav-link"
-            [class.active]="activeRoute === '/puntuacion' || activeRoute.startsWith('/puntuacion')"
+            routerLinkActive="active"
             [routerLink]="['/puntuacion']"
             title="Puntuaciones"
           >
@@ -81,7 +80,7 @@
         <li class="nav-item">
           <a
             class="nav-link"
-            [class.active]="activeRoute === '/temporada' || activeRoute.startsWith('/temporada')"
+            routerLinkActive="active"
             [routerLink]="['/temporada']"
             title="Temporadas"
           >
@@ -93,7 +92,7 @@
         <li class="nav-item">
           <a
             class="nav-link"
-            [class.active]="activeRoute === '/categoria' || activeRoute.startsWith('/categoria')"
+            routerLinkActive="active"
             [routerLink]="['/categoria']"
             title="Categorías"
           >
@@ -105,7 +104,7 @@
         <li class="nav-item">
           <a
             class="nav-link"
-            [class.active]="activeRoute === '/equipo' || activeRoute.startsWith('/equipo')"
+            routerLinkActive="active"
             [routerLink]="['/equipo']"
             title="Equipos"
           >
@@ -117,7 +116,7 @@
         <li class="nav-item">
           <a
             class="nav-link"
-            [class.active]="activeRoute === '/liga' || activeRoute.startsWith('/liga')"
+            routerLinkActive="active"
             [routerLink]="['/liga']"
             title="Ligas"
           >
@@ -129,7 +128,7 @@
         <li class="nav-item">
           <a
             class="nav-link"
-            [class.active]="activeRoute === '/partido' || activeRoute.startsWith('/partido')"
+            routerLinkActive="active"
             [routerLink]="['/partido']"
             title="Partidos"
           >
@@ -141,7 +140,7 @@
         <li class="nav-item">
           <a
             class="nav-link"
-            [class.active]="activeRoute === '/jugador' || activeRoute.startsWith('/jugador')"
+            routerLinkActive="active"
             [routerLink]="['/jugador']"
             title="Jugadores"
           >
@@ -153,7 +152,7 @@
         <li class="nav-item">
           <a
             class="nav-link"
-            [class.active]="activeRoute === '/cuota' || activeRoute.startsWith('/cuota')"
+            routerLinkActive="active"
             [routerLink]="['/cuota']"
             title="Cuotas"
           >
@@ -165,7 +164,7 @@
         <li class="nav-item">
           <a
             class="nav-link"
-            [class.active]="activeRoute === '/pago' || activeRoute.startsWith('/pago')"
+            routerLinkActive="active"
             [routerLink]="['/pago']"
             title="Pagos"
           >
@@ -176,7 +175,7 @@
         <li class="nav-item">
           <a
             class="nav-link"
-            [class.active]="activeRoute === '/articulo' || activeRoute.startsWith('/articulo')"
+            routerLinkActive="active"
             [routerLink]="['/articulo']"
             title="Artículos"
           >
@@ -188,9 +187,7 @@
         <li class="nav-item">
           <a
             class="nav-link"
-            [class.active]="
-              activeRoute === '/tipoarticulo' || activeRoute.startsWith('/tipoarticulo')
-            "
+            routerLinkActive="active"
             [routerLink]="['/tipoarticulo']"
             title="Tipos de Artículo"
           >
@@ -202,7 +199,7 @@
         <li class="nav-item">
           <a
             class="nav-link"
-            [class.active]="activeRoute === '/compra' || activeRoute.startsWith('/compra')"
+            routerLinkActive="active"
             [routerLink]="['/compra']"
             title="Compras"
           >
@@ -214,7 +211,7 @@
         <li class="nav-item">
           <a
             class="nav-link"
-            [class.active]="activeRoute === '/factura' || activeRoute.startsWith('/factura')"
+            routerLinkActive="active"
             [routerLink]="['/factura']"
             title="Facturas"
           >
@@ -226,7 +223,7 @@
         <li class="nav-item">
           <a
             class="nav-link"
-            [class.active]="activeRoute === '/carrito' || activeRoute.startsWith('/carrito')"
+            routerLinkActive="active"
             [routerLink]="['/carrito']"
             title="Carritos"
           >
@@ -238,7 +235,7 @@
         <li class="nav-item">
           <a
             class="nav-link"
-            [class.active]="activeRoute === '/comentarioart' || activeRoute.startsWith('/comentarioart')"
+            routerLinkActive="active"
             [routerLink]="['/comentarioart']"
             title="Comentarios Artículos"
           >
@@ -250,7 +247,7 @@
         <li class="nav-item">
           <a
             class="nav-link"
-            [class.active]="activeRoute === '/usuario' || activeRoute.startsWith('/usuario')"
+            routerLinkActive="active"
             [routerLink]="['/usuario']"
             title="Usuarios"
           >
@@ -262,9 +259,7 @@
         <li class="nav-item">
           <a
             class="nav-link"
-            [class.active]="
-              activeRoute === '/tipousuario' || activeRoute.startsWith('/tipousuario')
-            "
+            routerLinkActive="active"
             [routerLink]="['/tipousuario']"
             title="Tipos de Usuario"
           >
@@ -276,7 +271,7 @@
         <li class="nav-item">
           <a
             class="nav-link"
-            [class.active]="activeRoute === '/rolusuario' || activeRoute.startsWith('/rolusuario')"
+            routerLinkActive="active"
             [routerLink]="['/rolusuario']"
             title="Roles de Usuario"
           >

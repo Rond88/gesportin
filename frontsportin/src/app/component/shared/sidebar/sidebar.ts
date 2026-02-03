@@ -34,13 +34,13 @@ export class SidebarComponent implements OnInit {
           label: 'Noticias',
           icon: 'newspaper',
           children: [
-            { label: 'Gestionar Noticias', icon: 'pencil-square', route: '/noticia' },
+            { label: 'Noticias', icon: 'pencil-square', route: '/noticia' },
             { label: 'Comentarios', icon: 'chat-left-text', route: '/comentario' },
             { label: 'Puntuaciones', icon: 'star-fill', route: '/puntuacion' }
           ]
         },
         {
-          label: 'Gestión de Club',
+          label: 'Gestión',
           icon: 'gear',
           children: [
             { label: 'Temporadas', icon: 'calendar', route: '/temporada' },
