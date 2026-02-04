@@ -33,11 +33,8 @@ import { ClubViewAdminRouted } from './component/club/view-admin-routed/club-vie
 import { CuotaViewAdminRouted } from './component/cuota/view-admin-routed/cuota-view';
 import { TipousuarioViewAdminRouted } from './component/tipousario/view-admin-routed/tipousuario-view';
 import { CarritoViewAdminRouted } from './component/carrito/view-admin-routed/view-admin-routed';
-<<<<<<< master
 import { LigaViewRouted } from './component/liga/view-routed/liga-view';
-=======
 import { ComentarioartViewRouted } from './component/comentarioart/view-routed/comentarioart-view';
->>>>>>> master
 
 
 export const routes: Routes = [
