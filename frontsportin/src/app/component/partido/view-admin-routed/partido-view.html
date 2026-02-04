@@ -73,9 +73,7 @@
               <div class="col-5 text-muted small text-uppercase">Liga</div>
               <div class="col-7 fw-semibold small">
                 @if (oPartido()?.liga?.nombre) {
-                  <a [routerLink]="['/liga']" class="text-decoration-none">
-                    {{ oPartido()?.liga?.nombre }} ({{ oPartido()?.liga?.id }})
-                  </a>
+                  {{ oPartido()?.liga?.nombre }} ({{ oPartido()?.liga?.id }})
                 } @else {
                   Sin liga
                 }
@@ -124,9 +122,7 @@
                         <div class="border rounded p-2">
                           <div class="text-muted small text-uppercase">Equipo</div>
                           <div class="fw-semibold">
-                            <a [routerLink]="['/equipo']" class="text-decoration-none">
-                              {{ oPartido()?.liga?.equipo?.nombre }}
-                            </a>
+                            {{ oPartido()?.liga?.equipo?.nombre }}
                           </div>
                         </div>
                       </div>
@@ -140,13 +136,7 @@
                         <div class="border rounded p-2">
                           <div class="text-muted small text-uppercase">Entrenador</div>
                           <div class="fw-semibold">
-                            @if (oPartido()?.liga?.equipo?.entrenador?.id) {
-                              <a [routerLink]="['/usuario/view', oPartido()?.liga?.equipo?.entrenador?.id]" class="text-decoration-none">
-                                {{ oPartido()?.liga?.equipo?.entrenador?.nombre || 'N/A' }}
-                              </a>
-                            } @else {
-                              {{ oPartido()?.liga?.equipo?.entrenador?.nombre || 'N/A' }}
-                            }
+                            {{ oPartido()?.liga?.equipo?.entrenador?.nombre || 'N/A' }}
                           </div>
                         </div>
                       </div>
@@ -194,9 +184,7 @@
                   <div class="border rounded p-2 bg-white">
                     <div class="text-muted small text-uppercase">Nombre Liga</div>
                     <div class="fw-semibold">
-                      <a [routerLink]="['/liga']" class="text-decoration-none">
-                        {{ oPartido()?.liga?.nombre }}
-                      </a>
+                      {{ oPartido()?.liga?.nombre }}
                     </div>
                   </div>
                 </div>
