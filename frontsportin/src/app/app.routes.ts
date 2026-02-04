@@ -22,7 +22,7 @@ import { CarritoPlistAdminRouted } from './component/carrito/plist-admin-routed/
 import { ComentarioPlistAdminRouted } from './component/comentario/plist-admin-routed/comentario-plist';
 import { PagoPlistComponent } from './component/pago/plist-admin-routed/pago-plist';
 import { PuntuacionPlistAdminRouted } from './component/puntuacion/plist-admin-routed/puntuacion-plist';
-import { ViewAdminRouted } from './component/noticia/view-admin-routed/view-admin-routed';
+import { NoticiaViewAdminRouted } from './component/noticia/view-admin-routed/view-admin-routed';
 import { ComentarioartPlistAdminRouted } from './component/comentarioart/comentarioart-plist';
 import { CarritoViewAdminRouted } from './component/carrito/view-admin-routed/view-admin-routed';
 
@@ -59,7 +59,7 @@ export const routes: Routes = [
     { path: 'jugador/equipo/:id_equipo', component: JugadorPlisComponent},
     { path: 'noticia', component: NoticiaPlistAdminRouted},
     { path: 'noticia/club/:id_club', component: NoticiaPlistAdminRouted},
-    { path: 'noticia/view/:id', component: ViewAdminRouted },
+    { path: 'noticia/view/:id', component: NoticiaViewAdminRouted },
     { path: 'club/plist', component: ClubPlistAdminRouted},
     { path: 'club', component: ClubPlistAdminRouted},
     { path: 'cuota', component: CuotaPlistAdminRouted},
