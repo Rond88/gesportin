@@ -59,7 +59,7 @@ export class PlistEquipo {
   ) {}
 
   ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('categoria');
+    const id = this.route.snapshot.paramMap.get('id_categoria');
     if (id) {
       this.categoria.set(+id);
     }
@@ -166,23 +166,6 @@ export class PlistEquipo {
   onSearchNombre(value: string) {
     // Emitir el valor al Subject para que sea procesado con debounce
     this.searchSubject.next(value);
-  }
-
-  onSearchIdChange() {
-    // Si se borra el campo de ID, quitar el filtro
-    if (!this.searchId || this.searchId <= 0) {
-      this.filtroId.set(0);
-      this.numPage.set(0);
-      this.filterAndPaginate();
-    }
-  }
-
-  onSearchById() {
-    if (this.searchId && this.searchId > 0) {
-      this.filtroId.set(this.searchId);
-      this.numPage.set(0);
-      this.filterAndPaginate();
-    }
   }
 
   clearIdFilter() {
