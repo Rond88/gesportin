@@ -219,9 +219,11 @@
                   ></a>
                   <a
                     class="btn btn-danger btn-sm"
-                    [routerLink]="['/articulo/delete', oArticulo.id]"
+                    [routerLink]="canDeleteArticulo(oArticulo) ? ['/articulo/delete', oArticulo.id] : null"
+                    [class.disabled]="!canDeleteArticulo(oArticulo)"
+                    [attr.aria-disabled]="!canDeleteArticulo(oArticulo)"
                     role="button"
-                    title="Eliminar"
+                    [title]="canDeleteArticulo(oArticulo) ? 'Eliminar' : 'No se puede eliminar: hay registros dependientes (comentarios, compras o carritos)'"
                     ><i class="bi bi-trash" aria-hidden="true"></i
                   ></a>
                 </div>

@@ -133,4 +133,8 @@ export class ArticuloPlistAdminRouted {
     this.searchSubject.next(value);
   }
 
+  canDeleteArticulo(oArticulo: IArticulo): boolean {
+    return oArticulo.comentarioarts === 0 && oArticulo.compras === 0 && oArticulo.carritos === 0;
+  }
+
 }
