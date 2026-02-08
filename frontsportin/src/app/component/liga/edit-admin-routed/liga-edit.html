@@ -1,0 +1,63 @@
+<div class="container py-3">
+  <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 border rounded bg-light p-2 mb-3">
+    <div>
+      <div class="text-uppercase small text-muted fw-semibold">Ligas</div>
+      <div class="fw-bold">Editar liga</div>
+      <div class="text-muted small">Panel administrativo</div>
+    </div>
+    <a class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-2" routerLink="/liga">
+      <i class="bi bi-arrow-left"></i>
+      Volver
+    </a>
+  </div>
+
+  @if (loadingLiga()) {
+    <div class="text-center py-4">
+      <div class="spinner-border text-secondary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+      <p class="text-muted mt-2 mb-0">Cargando liga...</p>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="alert alert-danger d-flex align-items-center gap-2" role="alert">
+      <i class="bi bi-exclamation-triangle-fill"></i>
+      <span>{{ error() }}</span>
+    </div>
+  }
+
+  @if (!loadingLiga()) {
+    <form class="row g-3" (ngSubmit)="doSave()">
+      <div class="col-md-6">
+        <label class="form-label">Nombre</label>
+        <input
+          class="form-control"
+          type="text"
+          name="nombre"
+          [(ngModel)]="nombre"
+          placeholder="Nombre de la liga"
+          required
+        />
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Equipo</label>
+        <select class="form-select" name="equipoId" [(ngModel)]="equipoId" required>
+          <option [ngValue]="null">-- Selecciona un equipo --</option>
+          @for (equipo of oEquipos(); track equipo.id) {
+            <option [ngValue]="equipo.id">{{ equipo.nombre }} ({{ equipo.id }})</option>
+          }
+        </select>
+        @if (loadingEquipos()) {
+          <div class="form-text text-muted">Cargando equipos...</div>
+        }
+      </div>
+
+      <div class="col-12 d-flex justify-content-end gap-2">
+        <button class="btn btn-secondary" type="button" (click)="doCancel()">Cancelar</button>
+        <button class="btn btn-primary" type="submit" [disabled]="saving()">Guardar</button>
+      </div>
+    </form>
+  }
+</div>
