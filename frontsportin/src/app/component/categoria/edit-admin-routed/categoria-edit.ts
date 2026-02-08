@@ -59,7 +59,6 @@ export class CategoriaEditAdminRouted implements OnInit {
   cargarTemporadas(): void {
     this.oTemporadaService.getPage(0, 100, 'descripcion', 'asc', '', 0).subscribe({
       next: (page: IPage<ITemporada>) => {
-        // Extraer solo id y descripcion para reducir memoria
         this.temporadas = page.content.map(t => ({
           id: t.id,
           descripcion: t.descripcion
