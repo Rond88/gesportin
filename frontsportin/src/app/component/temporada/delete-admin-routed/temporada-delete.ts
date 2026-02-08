@@ -34,7 +34,26 @@ export class TemporadaDeleteAdminRouted implements OnInit {
       this.error.set('ID no válido');
       this.loading.set(false);
       return;
-    }    
+    }
+    this.cargarTemporada();
+  }
+
+  cargarTemporada(): void {
+    this.oTemporadaService.get(this.id_temporada()).subscribe({
+      next: (data: ITemporada) => {
+        this.oTemporada.set(data);
+        this.loading.set(false);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.error.set('Error al cargar la temporada');
+        this.loading.set(false);
+        console.error(err);
+      },
+    });
+  }
+
+  tieneCategorias(): boolean {
+    return (this.oTemporada()?.categorias ?? 0) > 0;
   }
 
   doDelete() {
