@@ -92,7 +92,7 @@
                   formControlName="id_articulo" readonly />
               </div>
               @if (selectedArticulo()) {
-              <div class="flex-grow-1">
+              <div class="grow">
                 <label class="form-label">Precio</label>
                 <p class="form-control-plaintext fw-semibold mb-0">
                   {{ selectedArticulo()?.precio | currency: 'EUR' }}
@@ -127,7 +127,7 @@
                   formControlName="id_factura" readonly />
               </div>
               @if (selectedFactura()) {
-              <div class="flex-grow-1">
+              <div class="grow">
                 <label class="form-label">Usuario</label>
                 <p class="form-control-plaintext fw-semibold mb-0">
                   {{ selectedFactura()?.usuario?.nombre }}
