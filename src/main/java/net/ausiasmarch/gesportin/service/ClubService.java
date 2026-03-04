@@ -71,6 +71,8 @@ public class ClubService {
         oClubExistente.setDireccion(oClubEntity.getDireccion());
         oClubExistente.setTelefono(oClubEntity.getTelefono());
         oClubExistente.setFechaAlta(oClubEntity.getFechaAlta());
+        oClubExistente.setLatitud(oClubEntity.getLatitud());
+        oClubExistente.setLongitud(oClubEntity.getLongitud());
         return oClubRepository.save(oClubExistente);
     }
 

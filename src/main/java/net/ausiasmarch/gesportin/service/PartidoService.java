@@ -48,6 +48,8 @@ public class PartidoService {
         oPartidoExistente.setLiga(oLigaService.get(oPartidoEntity.getLiga().getId()));
         oPartidoExistente.setLocal(oPartidoEntity.getLocal());
         oPartidoExistente.setResultado(oPartidoEntity.getResultado());
+        oPartidoExistente.setLatitud(oPartidoEntity.getLatitud());
+        oPartidoExistente.setLongitud(oPartidoEntity.getLongitud());
         return oPartidoRepository.save(oPartidoExistente);
     }
 
