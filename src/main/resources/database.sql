@@ -70,7 +70,9 @@ CREATE TABLE `club` (
   `dirección` varchar(255) CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL,
   `teléfono` varchar(255) CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL,
   `fecha_alta` datetime NOT NULL,
-  `imagen` longblob
+  `imagen` longblob,
+  `latitud` double DEFAULT NULL,
+  `longitud` double DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci;
 
 -- --------------------------------------------------------
@@ -220,7 +222,9 @@ CREATE TABLE `partido` (
   `rival` varchar(255) CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL,
   `id_liga` bigint NOT NULL,
   `local` tinyint(1) NOT NULL,
-  `resultado` varchar(255) CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL
+  `resultado` varchar(255) CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL,
+  `latitud` double DEFAULT NULL,
+  `longitud` double DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci;
 
 -- --------------------------------------------------------

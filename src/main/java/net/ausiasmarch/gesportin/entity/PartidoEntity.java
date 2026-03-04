@@ -42,5 +42,11 @@ public class PartidoEntity {
     @NotNull
     @Size(min = 3, max = 1024)
     private String resultado;
-    
+
+    @Column(name = "latitud")
+    private Double latitud;
+
+    @Column(name = "longitud")
+    private Double longitud;
+
 }

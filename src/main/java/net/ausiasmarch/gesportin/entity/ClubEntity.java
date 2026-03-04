@@ -45,42 +45,40 @@ public class ClubEntity {
     @Column(nullable = false)
     private byte[] imagen;
 
-    
+    @Column(name = "latitud")
+    private Double latitud;
+
+    @Column(name = "longitud")
+    private Double longitud;
+
     @Getter(AccessLevel.NONE)
     @OneToMany(mappedBy = "club", fetch = FetchType.LAZY)
     private List<TemporadaEntity> temporadas;
 
-    
     @Getter(AccessLevel.NONE)
     @OneToMany(mappedBy = "club", fetch = FetchType.LAZY)
     private List<NoticiaEntity> noticias;
 
-    
     @Getter(AccessLevel.NONE)
     @OneToMany(mappedBy = "club", fetch = FetchType.LAZY)
     private List<TipoarticuloEntity> tipoarticulos;
 
-    
     @Getter(AccessLevel.NONE)
     @OneToMany(mappedBy = "club", fetch = FetchType.LAZY)
     private List<UsuarioEntity> usuarios;
 
-   
     public int getTemporadas() {
         return temporadas != null ? temporadas.size() : 0;
     }
 
-   
     public int getNoticias() {
         return noticias != null ? noticias.size() : 0;
     }
 
-   
     public int getTipoarticulos() {
         return tipoarticulos != null ? tipoarticulos.size() : 0;
     }
 
-   
     public int getUsuarios() {
         return usuarios != null ? usuarios.size() : 0;
     }

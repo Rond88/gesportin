@@ -105,6 +105,9 @@ public class ClubService {
             oClub.setTelefono("6" + (random.nextInt(900000) + 1000000));
             oClub.setFechaAlta(LocalDateTime.now());
             // oClub.setImagen(("imagen" + i).getBytes());
+            // Coordenadas aleatorias dentro de España (lat 36-43, lng -9 a 3)
+            oClub.setLatitud(36.0 + random.nextDouble() * 7.0);
+            oClub.setLongitud(-9.0 + random.nextDouble() * 12.0);
             oClubRepository.save(oClub);
         }
         return cantidad;

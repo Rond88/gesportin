@@ -70,13 +70,16 @@ public class PartidoService {
 
     public Long fill(Long cantidad) {
         for (long j = 0; j < cantidad; j++) {
-            PartidoEntity oPartido = new PartidoEntity();            
+            PartidoEntity oPartido = new PartidoEntity();
             oPartido.setRival(oAleatorioService.generarNombreEquipoAleatorio());
             oPartido.setLiga(oLigaService.getOneRandom());
             oPartido.setLocal(oAleatorioService.generarNumeroAleatorioEnteroEnRango(0, 1) == 1);
             int golesLocal = oAleatorioService.generarNumeroAleatorioEnteroEnRango(0, 10);
             int golesVisitante = oAleatorioService.generarNumeroAleatorioEnteroEnRango(0, 10);
             oPartido.setResultado(golesLocal + "-" + golesVisitante);
+            // Coordenadas aleatorias dentro de España (lat 36-43, lng -9 a 3)
+            oPartido.setLatitud(36.0 + Math.random() * 7.0);
+            oPartido.setLongitud(-9.0 + Math.random() * 12.0);
             oPartidoRepository.save(oPartido);
         }
         return cantidad;
