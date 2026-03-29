@@ -1,0 +1,72 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { serverURL } from '../environment/environment';
+import { IRolusuario } from '../model/rolusuario';
+import { PayloadSanitizerService } from './payload-sanitizer';
+import { IPage } from '../model/plist';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class RolusuarioService {
+
+  constructor(private oHttp: HttpClient, private sanitizer: PayloadSanitizerService) { }
+
+  getPage(
+    page: number,
+    rpp: number,
+    order: string = '',
+    direction: string = '',
+    descripcion: string = ''
+  ): Observable<IPage<IRolusuario>> {
+
+    if (order === '') {
+      order = 'id';
+    }
+
+    if (direction === '') {
+       direction = 'asc';
+    }
+
+    let params =
+      `page=${page}&size=${rpp}&sort=${order},${direction}`;
+
+    if (descripcion !== '') {
+      params += `&descripcion=${descripcion}`;
+    }
+
+    if (descripcion && descripcion.length > 0) {
+      return this.oHttp.get<IPage<IRolusuario>>(
+        serverURL +
+        `/rolusuario?page=${page}&size=${rpp}&sort=${order},${direction}&descripcion=${descripcion}`,
+      );
+    }
+
+    return this.oHttp.get<IPage<IRolusuario>>(
+      serverURL + '/rolusuario?' + params
+    );
+  }
+
+   get(id: number): Observable<IRolusuario> {
+     return this.oHttp.get<IRolusuario>(serverURL + '/rolusuario/' + id);
+   }
+
+  delete(id: number): Observable<number> {
+    return this.oHttp.delete<number>(serverURL + '/rolusuario/' + id);
+  }
+
+  count(): Observable<number> {
+    return this.oHttp.get<number>(serverURL + '/rolusuario/count');
+  }
+
+  update(rolusuario: Partial<IRolusuario>): Observable<IRolusuario> {
+    const body = this.sanitizer.sanitize(rolusuario);
+    return this.oHttp.put<IRolusuario>(serverURL + '/rolusuario', body);
+  }
+
+  create(rolusuario: Partial<IRolusuario>): Observable<number> {
+    const body = this.sanitizer.sanitize(rolusuario);
+    return this.oHttp.post<number>(serverURL + '/rolusuario', body);
+  }
+}
