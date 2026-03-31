@@ -55,7 +55,8 @@
             }
           </div>
 
-          <!-- Sección: Club -->
+          <!-- Sección: Club (solo visible para admin global) -->
+          @if (!session.isClubAdmin()) {
           <div class="p-4 rounded mb-4" style="background-color: #e4e4e4; border-left: 4px solid #0d6efd;">
             <!-- Club -->
             <div class="mb-4">
@@ -78,11 +79,9 @@
 
             <!-- Buscador, ID y Descripción en una línea -->
             <div class="d-flex gap-3 align-items-end">
-              @if (!session.isClubAdmin()) {
               <button type="button" class="btn btn-info" (click)="openClubFinderModal()">
                 <i class="bi bi-search me-2"></i>Buscar
               </button>
-              }
               <div>
                 <label for="display_id_club" class="form-label">ID Club</label>
                 <input
@@ -104,6 +103,7 @@
               }
             </div>
           </div>
+          }
 
           <!-- Botones -->
           <div class="d-flex justify-content-between align-items-center mt-4">

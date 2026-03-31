@@ -75,47 +75,41 @@
     />
   </div>
 
+  @if (!session.isClubAdmin()) {
   <div class="p-4 rounded mb-4" style="background-color: #e4e4e4; border-left: 4px solid #0d6efd;">
-    @if(session.isClubAdmin()) {
-      <!-- club-admin sees only own club info -->
-      <div class="mb-2">
-        <strong>Club:</strong>
-        <span>{{ selectedClub()?.nombre }} (ID {{ displayIdClub() }})</span>
-      </div>
-    } @else {
-      <div class="mb-2">
-        <label class="form-label">Club <span class="text-danger">*</span></label>
-        <input type="text" class="form-control" [value]="selectedClub()?.nombre || ''" readonly />
-      </div>
+    <div class="mb-2">
+      <label class="form-label">Club <span class="text-danger">*</span></label>
+      <input type="text" class="form-control" [value]="selectedClub()?.nombre || ''" readonly />
+    </div>
 
-      <div class="d-flex gap-3 align-items-end">
-        <button type="button" class="btn btn-info" (click)="openClubFinderModal()">
-          <i class="bi bi-search me-2"></i>Buscar
-        </button>
-        <div>
-          <label for="display_id_club" class="form-label">ID Club</label>
-          <input
-            type="text"
-            class="form-control"
-            id="display_id_club"
-            [value]="displayIdClub() || ''"
-            readonly
-          />
-        </div>
-        @if (selectedClub()) {
-          <div class="flex-grow-1">
-            <label class="form-label">Nombre</label>
-            <p class="form-control-plaintext fw-semibold mb-0">
-              {{ selectedClub()?.nombre }}
-            </p>
-          </div>
-        }
+    <div class="d-flex gap-3 align-items-end">
+      <button type="button" class="btn btn-info" (click)="openClubFinderModal()">
+        <i class="bi bi-search me-2"></i>Buscar
+      </button>
+      <div>
+        <label for="display_id_club" class="form-label">ID Club</label>
+        <input
+          type="text"
+          class="form-control"
+          id="display_id_club"
+          [value]="displayIdClub() || ''"
+          readonly
+        />
       </div>
-      @if (id_club?.invalid && id_club?.touched) {
-        <div class="text-danger small mt-1">Debe seleccionar un club.</div>
+      @if (selectedClub()) {
+        <div class="flex-grow-1">
+          <label class="form-label">Nombre</label>
+          <p class="form-control-plaintext fw-semibold mb-0">
+            {{ selectedClub()?.nombre }}
+          </p>
+        </div>
       }
+    </div>
+    @if (id_club?.invalid && id_club?.touched) {
+      <div class="text-danger small mt-1">Debe seleccionar un club.</div>
     }
   </div>
+  }
 
   <div class="d-flex justify-content-between align-items-center mt-4">
     <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">
