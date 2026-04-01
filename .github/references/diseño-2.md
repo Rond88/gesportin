@@ -464,7 +464,7 @@ sin cambios en su experiencia.
 
 ### 5.1 Estructura raíz
 
-- `<div class="container py-3">` como contenedor raíz.
+- `<div class="container-fluid py-3">` como contenedor raíz.
 
 ### 5.2 Cabecera de sección
 
@@ -693,7 +693,7 @@ Mismas reglas que el perfil Administrador (Secciones 5.5, 5.7 y 5.8 del perfil i
 
 ### 7.1 Página `plist` (wrapper del componente plist)
 
-- Contenedor: `<div class="container my-2">`.
+- Contenedor: `<div class="container-fluid my-2">`.
 - **No lleva título `<h1>`** propio; el breadcrumb del componente ya indica la ubicación.
 - Montaje del componente con filtros si aplica:
   ```html
@@ -757,7 +757,7 @@ export class EntidadTeamadminNewPage implements OnInit {
 
 ### 7.5 Página `delete` (confirmación de borrado)
 
-- Contenedor: `<div class="container py-3">`.
+- Contenedor: `<div class="container-fluid py-3">`.
 - Alerta de confirmación:
   ```html
   <div class="alert alert-danger d-flex align-items-center gap-2 mb-3" role="alert">
@@ -924,7 +924,7 @@ export class EntidadTeamadminPlistPage implements OnInit {
 Pasa todos los inputs de filtro al componente:
 
 ```html
-<div class="container my-2">
+<div class="container-fluid my-2">
   <app-<entidad>-teamadmin-plist
     [id_<filtroA>]="id_<filtroA>()"
     [id_<filtroB>]="id_<filtroB>()">

@@ -175,7 +175,7 @@ Cada `<th>` sigue este patrón:
 
 ### 4.1 Estructura raíz
 
-- `<div class="container py-3">` como contenedor raíz.
+- `<div class="container-fluid py-3">` como contenedor raíz.
 
 ### 4.2 Cabecera de sección
 
@@ -408,7 +408,7 @@ Al final del card body de la tarjeta principal, tras las relaciones ManyToOne:
 
 ### 6.1 Página `plist` (wrapper del componente plist)
 
-- Contenedor: `<div class="container my-2">`.
+- Contenedor: `<div class="container-fluid my-2">`.
 - Título de sección visible al usuario:
   - `<div class="d-flex justify-content-center my-3">` →
     `<h1 class="mb-0"><i class="bi bi-<icono> me-2" aria-hidden="true"></i><Entidades en plural></h1>`.
@@ -425,7 +425,7 @@ Al final del card body de la tarjeta principal, tras las relaciones ManyToOne:
 
 ### 6.3 Página `new` (crear nuevo registro)
 
-- Contenedor: `<div class="container py-3">` → `<div class="row justify-content-center">` →
+- Contenedor: `<div class="container-fluid py-3">` → `<div class="row justify-content-center">` →
   `<div class="col-lg-6">`.
 - Cabecera de sección:
   - `<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 border rounded bg-light p-2 mb-3">` con:
@@ -449,7 +449,7 @@ Al final del card body de la tarjeta principal, tras las relaciones ManyToOne:
 
 ### 6.5 Página `delete` (confirmación de borrado)
 
-- Contenedor: `<div class="container my-4">` → `<div class="row justify-content-center">` →
+- Contenedor: `<div class="container-fluid my-4">` → `<div class="row justify-content-center">` →
   `<div class="col-12 col-lg-8">` → `<div class="form-card">`.
 - Cabecera: `<header class="mb-4"><h1 class="h3 mb-0">Eliminar <entidad></h1></header>`.
 - Mensaje de error si lo hay: `<div class="alert alert-danger" role="alert">{{ error() }}</div>`.
