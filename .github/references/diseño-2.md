@@ -1041,3 +1041,792 @@ breadcrumb contextual correcto.
 
 - **jugador**: rutas `equipo/:id_equipo` y `usuario/:id_usuario`.
   Implementación de referencia en `component/jugador/teamadmin/plist/plist.ts`.
+
+---
+
+## 14. Ejemplo completo — Entidad Temporada (Teamadmin)
+
+La entidad **Temporada** es el punto de partida en la jerarquía del perfil teamadmin
+(después de Mis Clubes) y sirve como referencia de implementación para todas las demás
+entidades de este perfil. Documenta todos los patrones descritos en las secciones anteriores
+aplicados a un caso real.
+
+### 14.1 Estructura de archivos
+
+```
+component/temporada/teamadmin/
+├── plist/           # Componente de listado (cards)
+│   ├── plist.ts
+│   ├── plist.html
+│   └── plist.css
+├── detail/          # Componente de detalle (solo lectura)
+│   ├── detail.ts
+│   ├── detail.html
+│   └── detail.css
+└── form/            # Componente de formulario (crear/editar)
+    ├── form.ts
+    ├── form.html
+    └── form.css
+
+page/temporada/teamadmin/
+├── plist/
+│   ├── plist.ts     # Page wrapper (mínimo, sin lógica)
+│   └── plist.html
+├── new/
+│   └── new.ts       # Page wrapper para crear
+├── edit/
+│   └── edit.ts      # Page wrapper para editar
+├── delete/          # Page wrapper + template para confirmar borrado
+│   ├── delete.ts
+│   └── delete.html
+└── view/
+    └── view.ts      # Page wrapper para detalle
+```
+
+### 14.2 Componente Plist: `component/temporada/teamadmin/plist/plist.ts`
+
+**Características principales:**
+- Breadcrumb dinámica que se adapta si la temporada está filtrada por club.
+- Búsqueda por descripción con debounce.
+- Paginación con `rpp = 5`.
+- Grid de tarjetas con información del club padre y contador de categorías.
+- Enlace de creación rápida en categorías si el contador es 0.
+
+```typescript
+@Component({
+  selector: 'app-temporada-teamadmin-plist',
+  imports: [Paginacion, RouterLink, TrimPipe, BotoneraActionsPlist, BreadcrumbComponent],
+  templateUrl: './plist.html',
+  styleUrl: './plist.css',
+})
+export class TemporadaTeamadminPlist {
+  @Input() id_club?: number;  // Opcional: filtro desde ruta `/temporada/teamadmin/club/:id_club`
+
+  breadcrumbItems = signal<BreadcrumbItem[]>([
+    { label: 'Mis Clubes', route: '/club/teamadmin' },
+    { label: 'Temporadas' },
+  ]);
+
+  oPage = signal<IPage<ITemporada> | null>(null);
+  numPage = signal<number>(0);
+  numRpp = signal<number>(5);
+
+  totalRecords = computed(() => this.oPage()?.totalElements ?? 0);
+  orderField = signal<string>('id');
+  orderDirection = signal<'asc' | 'desc'>('asc');
+
+  private searchSubject = new Subject<string>();
+  descripcion = signal<string>('');
+  private searchSubscription?: Subscription;
+
+  oTemporadaService = inject(TemporadaService);
+  private clubService = inject(ClubService);
+  session = inject(SessionService);
+
+  ngOnInit(): void {
+    // Si llega id_club, carga el nombre del club para el breadcrumb dinámico
+    if (this.id_club) {
+      this.clubService.get(this.id_club).subscribe({
+        next: (club) => this.breadcrumbItems.set([
+          { label: 'Mis Clubes', route: '/club/teamadmin' },
+          { label: club.nombre, route: `/club/teamadmin/view/${club.id}` },
+          { label: 'Temporadas' },
+        ]),
+      });
+    }
+
+    // Debounce de búsqueda
+    this.searchSubscription = this.searchSubject
+      .pipe(debounceTime(debounceTimeSearch), distinctUntilChanged())
+      .subscribe((searchTerm) => {
+        this.descripcion.set(searchTerm);
+        this.numPage.set(0);
+        this.getPage();
+      });
+
+    this.getPage();
+  }
+
+  getPage(): void {
+    this.oTemporadaService
+      .getPage(
+        this.numPage(),
+        this.numRpp(),
+        this.orderField(),
+        this.orderDirection(),
+        this.descripcion(),
+        this.id_club ?? 0  // Backend filtra por club cuando se envía > 0
+      )
+      .subscribe({
+        next: (data: IPage<ITemporada>) => {
+          this.oPage.set(data);
+          if (this.numPage() > 0 && this.numPage() >= data.totalPages) {
+            this.numPage.set(data.totalPages - 1);
+            this.getPage();
+          }
+        },
+        error: (error: HttpErrorResponse) => console.error(error),
+      });
+  }
+
+  onSearchDescription(value: string): void {
+    this.searchSubject.next(value);
+  }
+
+  goToPage(page: number): void {
+    this.numPage.set(page);
+    this.getPage();
+  }
+}
+```
+
+### 14.3 Componente Plist: `component/temporada/teamadmin/plist/plist.html`
+
+**Patrones aplicados:**
+- Breadcrumb al inicio.
+- Búsqueda centrada.
+- Contador total con indicador de filtro activo.
+- Paginación condicional.
+- Botón de creación.
+- Grid responsivo con tarjetas.
+- Badge de categorías con lógica 0 = amarillo (crear), > 0 = azul (listar).
+
+```html
+<div>
+  <!-- Breadcrumb -->
+  <app-breadcrumb [items]="breadcrumbItems()"></app-breadcrumb>
+
+  <!-- Búsqueda por descripción -->
+  <div class="d-flex justify-content-center my-2">
+    <input class="form-control me-2" type="search" 
+      placeholder="Buscar por descripción de la temporada"
+      [value]="descripcion()"
+      (input)="onSearchDescription($any($event.target).value)" />
+  </div>
+
+  <!-- Total registros -->
+  <div class="d-flex justify-content-center my-1">
+    <small class="text-muted">Total temporadas: {{ totalRecords() || 0 }}</small>
+    @if (descripcion().length > 0) {
+    <small class="text-muted ms-3">Filtro: descripción contiene "{{ descripcion() }}"</small>
+    }
+  </div>
+
+  <!-- Paginación -->
+  @if (totalRecords() > 0 && (oPage()?.totalPages ?? 1) > 1) {
+  <div class="container-fluid p-0 my-1">
+    <div class="controls-row mb-2">
+      <div class="col-control left">
+        <app-paginacion [numPage]="numPage()" [numPages]="oPage()?.totalPages || 1"
+          (pageChange)="goToPage($event)"></app-paginacion>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Botón de creación -->
+  <div class="d-flex my-1">
+    <div class="w-100 d-flex justify-content-center">
+      <a class="btn btn-primary new-btn" [routerLink]="['/temporada/teamadmin/new']" role="button">
+        <i class="bi bi-plus-circle" aria-hidden="true"></i>
+        <span class="d-none d-sm-inline">Crear una nueva Temporada</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Grid de tarjetas -->
+  <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+    @for (oTemporada of oPage()?.content; track oTemporada.id) {
+    <div class="col">
+      <div class="card h-100 shadow-sm">
+        <!-- Card Header -->
+        <div class="card-header">
+          <h5 class="card-title mb-0">ID {{ oTemporada.id }}</h5>
+        </div>
+
+        <!-- Card Body -->
+        <div class="card-body">
+          <p class="card-text"><strong>Descripción: </strong> {{ oTemporada.descripcion }}</p>
+          <p class="card-text">
+            <strong>Club: </strong>
+            <a [routerLink]="['/club/teamadmin/view', oTemporada.club.id]">
+              {{ oTemporada.club.nombre | trim: 20 }} ({{ oTemporada.club.id }})
+            </a>
+          </p>
+        </div>
+
+        <!-- Card Footer: Contadores y Acciones -->
+        <div class="card-footer d-flex justify-content-between">
+          <!-- Badge de categorías: 0 → amarillo (crear), >0 → azul (listar) -->
+          @if (oTemporada.categorias === 0) {
+            <a [routerLink]="['/categoria/teamadmin/new']" 
+              [queryParams]="{ id_temporada: oTemporada.id }"
+              class="badge big-badge bg-warning text-dark text-decoration-none" 
+              title="Crear primera categoría">
+              <i class="bi bi-plus-circle me-1"></i>0 categorías
+            </a>
+          } @else {
+            <a [routerLink]="['/categoria/teamadmin/temporada', oTemporada.id]"
+              class="badge big-badge bg-primary text-decoration-none" 
+              title="Ver categorías de esta temporada">
+              <i class="bi bi-tags-fill me-1"></i>{{ oTemporada.categorias }} categorías
+            </a>
+          }
+
+          <!-- Botonera de acciones (view, edit, delete) -->
+          <app-botonera-actions-plist [id]="oTemporada.id" strEntity="temporada"
+            strRole="teamadmin"></app-botonera-actions-plist>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+</div>
+```
+
+### 14.4 Componente Detail: `component/temporada/teamadmin/detail/detail.ts`
+
+**Características principales:**
+- Carga la temporada por ID.
+- Breadcrumb dinámica que incluye jerárquica completa: Mis Clubes → {Club} → Temporadas → {Descripción}.
+- Card principal con datos de la temporada.
+- Sección anidada del club (border-info, bg-info bg-opacity-10).
+- Contador de categorías con enlace a listar o botón de crear.
+
+```typescript
+@Component({
+  selector: 'app-temporada-teamadmin-detail',
+  imports: [CommonModule, RouterLink, DatetimePipe, BreadcrumbComponent],
+  templateUrl: './detail.html',
+  styleUrl: './detail.css',
+})
+export class TemporadaTeamadminDetail implements OnInit {
+  @Input() id: Signal<number> = signal(0);
+
+  private oTemporadaService = inject(TemporadaService);
+  session = inject(SessionService);
+
+  oTemporada = signal<ITemporada | null>(null);
+  loading = signal(true);
+  error = signal<string | null>(null);
+  breadcrumbItems = signal<BreadcrumbItem[]>([
+    { label: 'Mis Clubes', route: '/club/teamadmin' },
+    { label: 'Temporadas', route: '/temporada/teamadmin' },
+    { label: 'Temporada' },
+  ]);
+
+  ngOnInit(): void {
+    this.load(this.id());
+  }
+
+  load(id: number): void {
+    this.oTemporadaService.get(id).subscribe({
+      next: (data: ITemporada) => {
+        this.oTemporada.set(data);
+        this.loading.set(false);
+
+        // Breadcrumb dinámico con club
+        const club = data.club;
+        this.breadcrumbItems.set([
+          { label: 'Mis Clubes', route: '/club/teamadmin' },
+          ...(club ? [{ label: club.nombre, route: `/club/teamadmin/view/${club.id}` }] : []),
+          { label: 'Temporadas', route: club ? `/temporada/teamadmin/club/${club.id}` : '/temporada/teamadmin' },
+          { label: data.descripcion },
+        ]);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.error.set('Error cargando la temporada');
+        this.loading.set(false);
+        console.error(err);
+      },
+    });
+  }
+}
+```
+
+### 14.5 Componente Detail: `component/temporada/teamadmin/detail/detail.html`
+
+**Patrones aplicados:**
+- Breadcrumb.
+- Estados de carga y error.
+- Card principal con header de color primario.
+- Datos en filas de 2 columnas (col-5 / col-7).
+- Sección anidada del club con border-info y color info.
+- Contador de categorías con enlace o botón de crear si es 0.
+
+```html
+<div class="container-fluid py-3">
+  <app-breadcrumb [items]="breadcrumbItems()"></app-breadcrumb>
+
+  @if (loading()) {
+    <div class="text-center py-4">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+      <p class="text-muted small mt-2 mb-0">Cargando detalle...</p>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="alert alert-danger d-flex align-items-center gap-2" role="alert">
+      <i class="bi bi-exclamation-triangle-fill"></i> {{ error() }}
+    </div>
+  }
+
+  @if (!loading() && !error() && oTemporada()) {
+    <div class="card border-0 shadow-sm">
+      <!-- Card Header con icono, descripción e ID -->
+      <div class="card-header bg-primary text-white d-flex align-items-center gap-2">
+        <i class="bi bi-calendar3"></i>
+        <span class="fw-semibold">{{ oTemporada()?.descripcion }}</span>
+        <span class="badge bg-white text-primary ms-auto">ID {{ oTemporada()?.id }}</span>
+      </div>
+
+      <div class="card-body">
+        <!-- Datos principales de la temporada -->
+        <div class="row g-1 mb-3">
+          <div class="col-5 text-muted small text-uppercase">ID</div>
+          <div class="col-7 fw-semibold small">{{ oTemporada()?.id }}</div>
+
+          <div class="col-5 text-muted small text-uppercase">Descripción</div>
+          <div class="col-7 fw-semibold small">{{ oTemporada()?.descripcion }}</div>
+
+          <!-- Contador de categorías: 0 → enlace de crear, >0 → enlace a listar -->
+          <div class="col-5 text-muted small text-uppercase">Categorías</div>
+          <div class="col-7 fw-semibold small">
+            @if ((oTemporada()?.categorias ?? 0) > 0) {
+              <a [routerLink]="['/categoria/teamadmin/temporada', oTemporada()?.id]"
+                class="text-decoration-none">{{ oTemporada()?.categorias }}</a>
+            } @else {
+              0
+              <a [routerLink]="['/categoria/teamadmin/new']"
+                [queryParams]="{ id_temporada: oTemporada()?.id }"
+                class="btn btn-outline-success btn-sm ms-1 py-0 px-1"
+                title="Crear categoría">
+                <i class="bi bi-plus-lg"></i>
+              </a>
+            }
+          </div>
+        </div>
+
+        <!-- Sección anidada: Club (border-info, bg-info, text-info) -->
+        <div class="card border-start border-3 border-info mt-3">
+          <div class="card-header py-1 d-flex align-items-center gap-2 bg-info bg-opacity-10">
+            <i class="bi bi-building-fill text-info small"></i>
+            <span class="text-uppercase small fw-semibold text-info">Club</span>
+            <a [routerLink]="['/club/teamadmin/view', oTemporada()?.club?.id]"
+              class="ms-auto badge bg-info text-white text-decoration-none small">
+              {{ oTemporada()?.club?.nombre }} 
+              <span class="opacity-75 ms-1">#{{ oTemporada()?.club?.id }}</span>
+              <i class="bi bi-box-arrow-up-right ms-1"></i>
+            </a>
+          </div>
+
+          <div class="card-body p-2">
+            <div class="row g-1">
+              <div class="col-5 text-muted small text-uppercase">ID</div>
+              <div class="col-7 fw-semibold small">{{ oTemporada()?.club?.id }}</div>
+
+              <div class="col-5 text-muted small text-uppercase">Nombre</div>
+              <div class="col-7 fw-semibold small">{{ oTemporada()?.club?.nombre }}</div>
+
+              <div class="col-5 text-muted small text-uppercase">Dirección</div>
+              <div class="col-7 fw-semibold small">{{ oTemporada()?.club?.direccion }}</div>
+
+              <div class="col-5 text-muted small text-uppercase">Teléfono</div>
+              <div class="col-7 fw-semibold small">{{ oTemporada()?.club?.telefono }}</div>
+
+              <!-- Contadores del club: enlazar a listados teamadmin -->
+              <div class="col-5 text-muted small text-uppercase">Temporadas</div>
+              <div class="col-7 fw-semibold small">
+                @if ((oTemporada()?.club?.temporadas ?? 0) > 0) {
+                  <a [routerLink]="['/temporada/teamadmin/club', oTemporada()?.club?.id]"
+                    class="text-decoration-none">{{ oTemporada()?.club?.temporadas }}</a>
+                } @else {
+                  0
+                }
+              </div>
+
+              <div class="col-5 text-muted small text-uppercase">Noticias</div>
+              <div class="col-7 fw-semibold small">
+                @if ((oTemporada()?.club?.noticias ?? 0) > 0) {
+                  <a [routerLink]="['/noticia/teamadmin/club', oTemporada()?.club?.id]"
+                    class="text-decoration-none">{{ oTemporada()?.club?.noticias }}</a>
+                } @else {
+                  0
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>
+```
+
+### 14.6 Componente Form: `component/temporada/teamadmin/form/form.ts`
+
+**Características principales:**
+- Modo crear (id=0) vs. editar (id>0).
+- Breadcrumb dinámica que se adapta según modo.
+- Pre-relleno de club desde la sesión (si es clubadmin).
+- Selección de club vía modal para admin global.
+- Validación: descripción (required, 3-255 caracteres).
+- Estados: loading, submitting, error.
+
+```typescript
+@Component({
+  selector: 'app-temporada-teamadmin-form',
+  imports: [ReactiveFormsModule, RouterLink, BreadcrumbComponent],
+  templateUrl: './form.html',
+  styleUrl: './form.css',
+})
+export class TemporadaTeamadminForm implements OnInit {
+  id = input<number>(0);
+  returnUrl = input<string>('/temporada/teamadmin');
+
+  private fb = inject(FormBuilder);
+  private router = inject(Router);
+  private oTemporadaService = inject(TemporadaService);
+  private oClubService = inject(ClubService);
+  private notificacion = inject(NotificacionService);
+  private modalService = inject(ModalService);
+  session = inject(SessionService);
+
+  temporadaForm!: FormGroup;
+  loading = signal<boolean>(true);
+  error = signal<string | null>(null);
+  submitting = signal<boolean>(false);
+  temporada = signal<ITemporada | null>(null);
+  selectedClub = signal<IClub | null>(null);
+
+  breadcrumbItems = signal<BreadcrumbItem[]>([
+    { label: 'Mis Clubes', route: '/club/teamadmin' },
+    { label: 'Temporadas', route: '/temporada/teamadmin' },
+    { label: 'Nueva Temporada' },
+  ]);
+
+  get descripcion() {
+    return this.temporadaForm.get('descripcion');
+  }
+
+  get id_club() {
+    return this.temporadaForm.get('id_club');
+  }
+
+  ngOnInit(): void {
+    this.initForm();
+    if (this.id() > 0) {
+      this.getTemporada(this.id());
+    } else {
+      this.loading.set(false);
+    }
+  }
+
+  initForm(): void {
+    this.temporadaForm = this.fb.group({
+      descripcion: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(255)]],
+      id_club: [null, [Validators.required]],
+    });
+
+    // Si es clubadmin, pre-rellena el club desde la sesión
+    if (this.session.isClubAdmin()) {
+      const cid = this.session.getClubId();
+      if (cid != null) {
+        this.temporadaForm.patchValue({ id_club: cid });
+        this.oClubService.get(cid).subscribe({
+          next: (club) => this.selectedClub.set(club),
+        });
+      }
+    }
+  }
+
+  getTemporada(id: number): void {
+    this.oTemporadaService.get(id).subscribe({
+      next: (data: ITemporada) => {
+        this.temporada.set(data);
+        this.syncClub(data.club.id);
+        this.temporadaForm.patchValue({
+          descripcion: data.descripcion,
+          id_club: data.club.id,
+        });
+        this.loading.set(false);
+
+        // Breadcrumb para edición
+        const club = data.club;
+        this.breadcrumbItems.set([
+          { label: 'Mis Clubes', route: '/club/teamadmin' },
+          ...(club ? [{ label: club.nombre, route: `/club/teamadmin/view/${club.id}` }] : []),
+          { label: 'Temporadas', route: club ? `/temporada/teamadmin/club/${club.id}` : '/temporada/teamadmin' },
+          { label: data.descripcion, route: `/temporada/teamadmin/view/${data.id}` },
+          { label: 'Editar' },
+        ]);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.error.set('Error al cargar el registro');
+        this.loading.set(false);
+        console.error(err);
+      },
+    });
+  }
+
+  syncClub(clubId: number): void {
+    this.oClubService.get(clubId).subscribe({
+      next: (club) => {
+        this.selectedClub.set(club);
+        this.temporadaForm.patchValue({ id_club: clubId });
+      },
+    });
+  }
+
+  openClubFinderModal(): void {
+    this.modalService.open(ClubAdminPlist, { data: { isDialogMode: true } }).subscribe({
+      next: (selectedClub: IClub) => {
+        if (selectedClub) {
+          this.selectedClub.set(selectedClub);
+          this.temporadaForm.patchValue({ id_club: selectedClub.id });
+        }
+      },
+    });
+  }
+
+  onSubmit(): void {
+    if (!this.temporadaForm.valid) {
+      this.temporadaForm.markAllAsTouched();
+      return;
+    }
+
+    this.submitting.set(true);
+    const formValue = this.temporadaForm.value;
+
+    if (this.id() > 0) {
+      // Modo edición
+      this.oTemporadaService.update(this.id(), formValue).subscribe({
+        next: () => {
+          this.submitting.set(false);
+          this.notificacion.success('Temporada actualizada correctamente');
+          this.router.navigate([this.returnUrl()], { queryParams: { msg: 'Temporada actualizada' } });
+        },
+        error: (err: HttpErrorResponse) => {
+          this.submitting.set(false);
+          this.notificacion.error(err.error?.message || 'Error al actualizar');
+          console.error(err);
+        },
+      });
+    } else {
+      // Modo creación
+      this.oTemporadaService.add(formValue).subscribe({
+        next: (createdTemporada: ITemporada) => {
+          this.submitting.set(false);
+          this.notificacion.success('Temporada creada correctamente');
+          this.router.navigate([this.returnUrl()], { queryParams: { msg: 'Temporada creada' } });
+        },
+        error: (err: HttpErrorResponse) => {
+          this.submitting.set(false);
+          this.notificacion.error(err.error?.message || 'Error al crear');
+          console.error(err);
+        },
+      });
+    }
+  }
+
+  goBack(): void {
+    this.router.navigate([this.returnUrl()]);
+  }
+}
+```
+
+### 14.7 Componente Form: `component/temporada/teamadmin/form/form.html`
+
+**Patrones aplicados:**
+- Breadcrumb.
+- Título dinámico (Nueva Temporada / Editar Temporada).
+- Campo ID (solo edición, readonly).
+- Campo Descripción con validación inline.
+- Sección de Club (solo visible para admin global):
+  - Input readonly con nombre del club.
+  - Botón de búsqueda para abrir modal.
+  - Input readonly con ID.
+  - Mostrar dirección adicional.
+- Botones: Cancelar y Guardar/Crear.
+- Estados: loading, error, submitting.
+
+```html
+<app-breadcrumb [items]="breadcrumbItems()"></app-breadcrumb>
+
+<div class="container-fluid my-4 edit-form">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+      <div class="form-card">
+        <header class="mb-4">
+          <h1 class="h3 mb-0">
+            @if (id() && id() > 0) {Editar Temporada} @else {Nueva Temporada}
+          </h1>
+        </header>
+
+        @if (loading()) {
+        <div class="d-flex justify-content-center my-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+        </div>
+        }
+
+        @if (error()) {
+        <div class="alert alert-danger" role="alert">
+          <i class="bi bi-exclamation-triangle me-2"></i>{{ error() }}
+        </div>
+        }
+
+        @if (!loading() && !error()) {
+        <form [formGroup]="temporadaForm" (ngSubmit)="onSubmit()" novalidate>
+          <!-- ID (solo lectura cuando exista) -->
+          @if (id() > 0) {
+            <div class="mb-4">
+              <label for="id" class="form-label">ID de la temporada</label>
+              <input type="text" class="form-control" id="id" [value]="id()" disabled />
+            </div>
+          }
+
+          <!-- Descripción -->
+          <div class="mb-4">
+            <label for="descripcion" class="form-label">Descripción <span class="text-danger">*</span></label>
+            <input
+              type="text"
+              class="form-control"
+              [class.is-invalid]="descripcion?.invalid && descripcion?.touched"
+              [class.is-valid]="descripcion?.valid && descripcion?.touched"
+              id="descripcion"
+              formControlName="descripcion"
+              placeholder="Introduce una descripción para la temporada"
+            />
+            @if (descripcion?.invalid && descripcion?.touched) {
+            <div class="invalid-feedback">
+              @if (descripcion?.errors?.['required']) {
+                <span>La descripción es obligatoria.</span>
+              } @else if (descripcion?.errors?.['minlength']) {
+                <span>La descripción debe tener al menos 3 caracteres.</span>
+              } @else if (descripcion?.errors?.['maxlength']) {
+                <span>La descripción no puede superar 255 caracteres.</span>
+              }
+            </div>
+            }
+          </div>
+
+          <!-- Sección: Club (solo visible para admin global) -->
+          @if (!session.isClubAdmin()) {
+          <div class="p-4 rounded mb-4" style="background-color: #e4e4e4; border-left: 4px solid #0d6efd;">
+            <div class="mb-4">
+              <label for="club" class="form-label">Club <span class="text-danger">*</span></label>
+              <input
+                id="club"
+                type="text"
+                class="form-control"
+                [class.is-invalid]="id_club?.invalid && id_club?.touched"
+                [class.is-valid]="id_club?.valid && id_club?.touched"
+                [value]="selectedClub()?.nombre"
+                readonly
+              />
+              @if (id_club?.invalid && id_club?.touched) {
+                <div class="invalid-feedback">
+                  <span>Debe seleccionar un club.</span>
+                </div>
+              }
+            </div>
+
+            <!-- Buscador, ID y Dirección en una línea -->
+            <div class="d-flex gap-3 align-items-end">
+              <button type="button" class="btn btn-info" (click)="openClubFinderModal()">
+                <i class="bi bi-search me-2"></i>Buscar
+              </button>
+              <div>
+                <label for="display_id_club" class="form-label">ID Club</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="display_id_club"
+                  [value]="id_club?.value"
+                  formControlName="id_club"
+                  readonly
+                />
+              </div>
+              @if (selectedClub()) {
+                <div class="grow">
+                  <label class="form-label">Dirección</label>
+                  <p class="form-control-plaintext fw-semibold mb-0">
+                    {{ selectedClub()?.direccion }}
+                  </p>
+                </div>
+              }
+            </div>
+          </div>
+          }
+
+          <!-- Botones -->
+          <div class="d-flex justify-content-between align-items-center mt-4">
+            <a [routerLink]="[returnUrl()]" class="btn btn-outline-secondary">
+              <i class="bi bi-arrow-left me-2"></i>Cancelar
+            </a>
+            <button type="submit" class="btn btn-primary" [disabled]="submitting() || temporadaForm.invalid">
+              @if (submitting()) {
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              } @else {
+                <i class="bi bi-check-circle me-2"></i>
+              }
+              @if (id() && id() > 0) {Guardar Cambios} @else {Crear}
+            </button>
+          </div>
+        </form>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+### 14.8 Rutas en `app.routes.ts`
+
+La entidad Temporada tiene una estructura simple sin rutas duales. Las rutas son:
+
+```typescript
+// Temporada - Teamadmin
+{ path: 'temporada/teamadmin', 
+  component: TemporadaTeamadminPlistPage, 
+  canActivate: [ClubAdminGuard] },
+{ path: 'temporada/teamadmin/club/:id_club', 
+  component: TemporadaTeamadminPlistPage, 
+  canActivate: [ClubAdminGuard] },
+{ path: 'temporada/teamadmin/view/:id', 
+  component: TemporadaTeamadminViewPage, 
+  canActivate: [ClubAdminGuard] },
+{ path: 'temporada/teamadmin/new', 
+  component: TemporadaTeamadminNewPage, 
+  canActivate: [ClubAdminGuard] },
+{ path: 'temporada/teamadmin/edit/:id', 
+  component: TemporadaTeamadminEditPage, 
+  canActivate: [ClubAdminGuard] },
+{ path: 'temporada/teamadmin/delete/:id', 
+  component: TemporadaTeamadminDeletePage, 
+  canActivate: [ClubAdminGuard] },
+```
+
+- Ruta base: `/temporada/teamadmin` (lista todas las temporadas del club actual).
+- Ruta filtrada: `/temporada/teamadmin/club/:id_club` (lista temporadas de un club específico, 
+  usado desde detail de Club o cuando se navega manualmente).
+
+### 14.9 Conclusión
+
+La entidad Temporada aplica todos los patrones de diseño del perfil teamadmin:
+
+✅ **Breadcrumb dinámica** que se adapta al contexto de navegación.
+✅ **Plist con tarjetas**, búsqueda y paginación.
+✅ **Contadores inteligentes** (0 = crear, >0 = listar).
+✅ **Detail con secciones anidadas** (relaciones ManyToOne con colores).
+✅ **Form con validación reactiva** y pre-relleno de datos.
+✅ **Inyección de dependencias** siguiendo patrones de Angular Signals.
+✅ **NotificacionService** para feedback de usuario (success/error).
+✅ **Guard de acceso** (`ClubAdminGuard`) en todas las rutas.
+
+Para implementar nuevas entidades en el perfil teamadmin, tomar Temporada como referencia
+de implementación y adaptar los nombres de entidades, campos y relaciones según corresponda.
