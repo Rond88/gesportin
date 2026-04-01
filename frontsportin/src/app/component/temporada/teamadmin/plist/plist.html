@@ -1,6 +1,8 @@
 <div>
 
-  <app-breadcrumb [items]="breadcrumbItems()"></app-breadcrumb>
+  @if (showBreadcrumb) {
+    <app-breadcrumb [items]="breadcrumbItems()"></app-breadcrumb>
+  }
 
   <!-- Búsqueda por descripción -->
   <div class="d-flex justify-content-center my-2">

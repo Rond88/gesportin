@@ -22,6 +22,7 @@ import { BreadcrumbComponent, BreadcrumbItem } from '../../../shared/breadcrumb/
 })
 export class CategoriaTeamadminPlist {
   @Input() temporada: number = 0;
+  @Input() showBreadcrumb = true;
 
   breadcrumbItems = signal<BreadcrumbItem[]>([
     { label: 'Mis Clubes', route: '/club/teamadmin' },

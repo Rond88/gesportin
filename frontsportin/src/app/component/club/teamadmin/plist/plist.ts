@@ -1,4 +1,4 @@
-import { Component, signal, computed, inject } from '@angular/core';
+import { Component, signal, computed, inject, Input } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Paginacion } from '../../../shared/paginacion/paginacion';
@@ -16,6 +16,7 @@ import { BreadcrumbItem, BreadcrumbComponent } from '../../../shared/breadcrumb/
   styleUrl: './plist.css',
 })
 export class ClubTeamadminPlist {
+  @Input() showBreadcrumb = true;
   oPage = signal<IPage<IClub> | null>(null);
   numPage = signal<number>(0);
   numRpp = signal<number>(5);

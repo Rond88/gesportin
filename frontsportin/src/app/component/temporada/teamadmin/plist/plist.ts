@@ -21,6 +21,7 @@ import { ClubService } from '../../../../service/club';
 })
 export class TemporadaTeamadminPlist {
   @Input() id_club?: number;
+  @Input() showBreadcrumb = true;
 
   breadcrumbItems = signal<BreadcrumbItem[]>([
     { label: 'Mis Clubes', route: '/club/teamadmin' },
