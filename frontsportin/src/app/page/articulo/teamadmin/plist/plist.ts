@@ -11,7 +11,7 @@ import { TipoarticuloService } from '../../../../service/tipoarticulo';
   styleUrl: './plist.css',
 })
 export class ArticuloTeamadminPlistPage implements OnInit {
-  breadcrumbItems = signal<BreadcrumbItem[]>([{ label: 'Tipos de Artículo', route: '/tipoarticulo/teamadmin' }, { label: 'Artículos' }]);
+  breadcrumbItems = signal<BreadcrumbItem[]>([{ label: 'Mis Clubes', route: '/club/teamadmin' }, { label: 'Tipos de Artículo', route: '/tipoarticulo/teamadmin' }, { label: 'Artículos' }]);
 
   id_tipoarticulo = signal<number | undefined>(undefined);
 
@@ -24,11 +24,18 @@ export class ArticuloTeamadminPlistPage implements OnInit {
       const id = Number(idParam);
       this.id_tipoarticulo.set(id);
       this.tipoarticuloService.get(id).subscribe({
-        next: (t) => this.breadcrumbItems.set([
-          { label: 'Tipos de Artículo', route: '/tipoarticulo/teamadmin' },
-          { label: t.descripcion, route: `/tipoarticulo/teamadmin/view/${t.id}` },
-          { label: 'Artículos' },
-        ]),
+        next: (t) => {
+          const items: BreadcrumbItem[] = [
+            { label: 'Mis Clubes', route: '/club/teamadmin' },
+          ];
+          if (t.club) {
+            items.push({ label: t.club.nombre, route: `/club/teamadmin/view/${t.club.id}` });
+          }
+          items.push({ label: 'Tipos de Artículo', route: '/tipoarticulo/teamadmin' });
+          items.push({ label: t.descripcion, route: `/tipoarticulo/teamadmin/view/${t.id}` });
+          items.push({ label: 'Artículos' });
+          this.breadcrumbItems.set(items);
+        },
         error: () => {},
       });
     }

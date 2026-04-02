@@ -175,7 +175,7 @@ Cada `<th>` sigue este patrón:
 
 ### 4.1 Estructura raíz
 
-- `<div class="container-fluid py-3">` como contenedor raíz.
+- `<div class="container-fluid">` como contenedor raíz.
 
 ### 4.2 Cabecera de sección
 
@@ -425,7 +425,7 @@ Al final del card body de la tarjeta principal, tras las relaciones ManyToOne:
 
 ### 6.3 Página `new` (crear nuevo registro)
 
-- Contenedor: `<div class="container-fluid py-3">` → `<div class="row justify-content-center">` →
+- Contenedor: `<div class="container-fluid">` → `<div class="row justify-content-center">` →
   `<div class="col-lg-6">`.
 - Cabecera de sección:
   - `<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 border rounded bg-light p-2 mb-3">` con:

@@ -48,12 +48,72 @@ frontsportin. Debe aplicarse de forma uniforme a todas las entidades gestionadas
 
 ### 2.2 Construcción dinámica de la miga de pan
 
-Cada componente `plist` teamadmin mantiene un signal `breadcrumbItems` que se inicializa con la
-cadena de navegación estática y se **reconstruye dinámicamente** en `ngOnInit()` cuando existen
-filtros FK activos.
+#### Regla arquitectónica fundamental
 
-**Ejemplo de equipo (filtrado por categoría)**:
+> **Los breadcrumbs viven exclusivamente en `app/page`, nunca en `app/component`.**
+>
+> El componente `app-breadcrumb` se importa y se renderiza desde la **página wrapper**
+> (`page/<entidad>/teamadmin/plist/plist.ts` + `.html`). El componente de presentación
+> (`component/<entidad>/teamadmin/plist/`) no conoce ni importa nada relacionado con
+> breadcrumbs.
+
+#### Patrón canónico de construcción del breadcrumb
+
+El patrón se extrae de `app/page/usuario/teamadmin/plist/plist.ts`:
+
+1. **Signal del ID padre inicializado a `0`** (no `undefined`):
+   ```typescript
+   id_club = signal<number>(0);
+   ```
+
+2. **Signal `breadcrumbItems` con valor preliminar estático** (usando el ID del signal como
+   placeholder):
+   ```typescript
+   breadcrumbItems = signal<BreadcrumbItem[]>([
+     { label: 'Mis Clubes', route: '/club/teamadmin' },
+     { label: '' + this.id_club(), route: '/club/teamadmin/' + this.id_club() },
+     { label: 'Usuarios' },
+   ]);
+   ```
+
+3. **`ngOnInit()` en tres pasos**:
+   a. Leer el parámetro de ruta y actualizar el signal del ID padre.
+   b. Llamar al servicio del padre para obtener su nombre real.
+   c. En el callback `next`, llamar a `this.breadcrumbItems.set([...])` con los etiquetas
+      reales (nombres de entidad, no IDs) y las rutas correctas.
+
+   ```typescript
+   ngOnInit(): void {
+     const idParam = this.route.snapshot.paramMap.get('id_club');
+     if (idParam) {
+       this.id_club.set(Number(idParam));
+     }
+     this.clubService.get(this.id_club()).subscribe(club => {
+       this.breadcrumbItems.set([
+         { label: 'Mis Clubes', route: '/club/teamadmin' },
+         { label: club.nombre, route: '/club/teamadmin/' + this.id_club() },
+         { label: 'Usuarios' },
+       ]);
+     });
+   }
+   ```
+
+#### Regla sobre los nombres de entidad en el breadcrumb
+
+- Nunca mostrar IDs numéricos en el breadcrumb. El label debe ser siempre el nombre
+  descriptivo de la entidad (`club.nombre`, `temporada.descripcion`, `equipo.nombre`, etc.).
+- Si la cadena de FK es profunda (ej. equipo → categoría → temporada → club), el servicio
+  del nivel más cercano al listado ya devuelve las relaciones anidadas; se usa la estructura
+  del modelo para extraer los nombres de cada nivel.
+- Cuando la entidad padre no existe en la ruta (ruta raíz sin FK), el breadcrumb se queda
+  con los labels genéricos de categoría (ej. `'Temporadas'`, `'Noticias'`).
+
+#### Ejemplo completo — equipo filtrado por categoría
+
 ```typescript
+// page/equipo/teamadmin/plist/plist.ts
+id_categoria = signal<number>(0);
+
 breadcrumbItems = signal<BreadcrumbItem[]>([
   { label: 'Mis Clubes', route: '/club/teamadmin' },
   { label: 'Temporadas', route: '/temporada/teamadmin' },
@@ -62,14 +122,19 @@ breadcrumbItems = signal<BreadcrumbItem[]>([
 ]);
 
 ngOnInit(): void {
-  if (this.categoria > 0) {
-    this.oCategoriaService.get(this.categoria).subscribe({
+  const idParam = this.route.snapshot.paramMap.get('id_categoria');
+  if (idParam) {
+    this.id_categoria.set(Number(idParam));
+    this.categoriaService.get(this.id_categoria()).subscribe({
       next: (cat) => {
         const temp = cat.temporada;
         const items: BreadcrumbItem[] = [
           { label: 'Mis Clubes', route: '/club/teamadmin' },
-          { label: 'Temporadas', route: '/temporada/teamadmin' },
         ];
+        if (temp?.club) {
+          items.push({ label: temp.club.nombre, route: `/club/teamadmin/view/${temp.club.id}` });
+        }
+        items.push({ label: 'Temporadas', route: '/temporada/teamadmin' });
         if (temp) {
           items.push({ label: temp.descripcion, route: `/temporada/teamadmin/view/${temp.id}` });
         }
@@ -81,10 +146,38 @@ ngOnInit(): void {
         items.push({ label: 'Equipos' });
         this.breadcrumbItems.set(items);
       },
+      error: () => {},
     });
   }
 }
 ```
+
+#### Tabla de servicios y campos para cada entidad breadcrumb
+
+| Entidad | FK del param | Servicio | Campo nombre | Profundidad |
+|---------|-------------|---------|-------------|------------|
+| temporada | `id_club` | `ClubService.get()` | `club.nombre` | 1 |
+| categoria | `id_temporada` | `TemporadaService.get()` | `temp.descripcion`, `temp.club.nombre` | 2 |
+| equipo | `id_categoria` | `CategoriaService.get()` | `cat.nombre`, `cat.temporada.*`, `cat.temporada.club.*` | 3 |
+| jugador | `id_equipo` | `EquipoService.get()` | igual que equipo | 4 |
+| jugador | `id_usuario` | `UsuarioService.get()` | `usuario.nombre + apellido1` | 1 (vía Usuarios) |
+| cuota | `id_equipo` | `EquipoService.get()` | igual que equipo | 4 |
+| liga | `id_equipo` | `EquipoService.get()` | igual que equipo | 4 |
+| partido | `id_liga` | `LigaService.get()` | `liga.nombre`, `liga.equipo.*` | 5 |
+| pago | `id_cuota` | `CuotaService.get()` | `cuota.descripcion`, `cuota.equipo.*` | 5 |
+| pago | `id_jugador` | `JugadorService.getById()` | `jugador.usuario.*`, `jugador.equipo.*` | 5 |
+| noticia | `id_club` | `ClubService.get()` | `club.nombre` | 1 |
+| comentario | `id_noticia` | `NoticiaService.getById()` | `noticia.titulo` | 1 |
+| tipoarticulo | `id_club` | `ClubService.get()` | `club.nombre` | 1 |
+| articulo | `id_tipoarticulo` | `TipoarticuloService.get()` | `tipoarticulo.descripcion` | 1 |
+| puntuacion | `id_noticia` | `NoticiaService.getById()` | `noticia.titulo` | 1 |
+| puntuacion | `id_usuario` | `UsuarioService.get()` | `usuario.nombre + apellido1` | 1 |
+| factura | `id_usuario` | `UsuarioService.get()` | `usuario.nombre + apellido1` | 1 |
+| compra | `id_articulo` | `ArticuloService.get()` | `articulo.nombre` | 1 |
+| carrito | `id_articulo` | `ArticuloService.get()` | `articulo.nombre` | 1 |
+| carrito | `id_usuario` | `UsuarioService.get()` | `usuario.nombre + apellido1` | 1 |
+| comentarioart | `id_articulo` | `ArticuloService.get()` | `articulo.nombre` | 1 |
+| comentarioart | `id_usuario` | `UsuarioService.get()` | `usuario.nombre + apellido1` | 1 |
 
 ### 2.3 Jerarquía de navegación del perfil teamadmin
 
@@ -464,7 +557,7 @@ sin cambios en su experiencia.
 
 ### 5.1 Estructura raíz
 
-- `<div class="container-fluid py-3">` como contenedor raíz.
+- `<div class="container-fluid">` como contenedor raíz.
 
 ### 5.2 Cabecera de sección
 
@@ -757,7 +850,7 @@ export class EntidadTeamadminNewPage implements OnInit {
 
 ### 7.5 Página `delete` (confirmación de borrado)
 
-- Contenedor: `<div class="container-fluid py-3">`.
+- Contenedor: `<div class="container-fluid">`.
 - Alerta de confirmación:
   ```html
   <div class="alert alert-danger d-flex align-items-center gap-2 mb-3" role="alert">
@@ -1355,7 +1448,7 @@ export class TemporadaTeamadminDetail implements OnInit {
 - Contador de categorías con enlace o botón de crear si es 0.
 
 ```html
-<div class="container-fluid py-3">
+<div class="container-fluid">
   <app-breadcrumb [items]="breadcrumbItems()"></app-breadcrumb>
 
   @if (loading()) {
