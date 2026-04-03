@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import net.ausiasmarch.gesportin.entity.JugadorEntity;
 import net.ausiasmarch.gesportin.entity.PagoEntity;
 import net.ausiasmarch.gesportin.exception.ResourceNotFoundException;
 import net.ausiasmarch.gesportin.exception.UnauthorizedException;
@@ -71,8 +72,16 @@ public class PagoService {
     }
 
     public PagoEntity create(PagoEntity oPagoEntity) {
-        oSessionService.denyUsuario();
-        if (oSessionService.isEquipoAdmin()) {
+        if (oSessionService.isUsuario()) {
+            // Usuario can only create a pago for their own jugador record
+            JugadorEntity jugador = oJugadorService.get(oPagoEntity.getJugador().getId());
+            if (!jugador.getUsuario().getId().equals(oSessionService.getIdUsuario())) {
+                throw new UnauthorizedException("Acceso denegado: solo puede pagar sus propias cuotas");
+            }
+            Long clubCuota = oCuotaService.get(oPagoEntity.getCuota().getId())
+                    .getEquipo().getCategoria().getTemporada().getClub().getId();
+            oSessionService.checkSameClub(clubCuota);
+        } else if (oSessionService.isEquipoAdmin()) {
             Long clubC = oCuotaService.get(oPagoEntity.getCuota().getId())
                     .getEquipo().getCategoria().getTemporada().getClub().getId();
             Long clubJ = oJugadorService.get(oPagoEntity.getJugador().getId())

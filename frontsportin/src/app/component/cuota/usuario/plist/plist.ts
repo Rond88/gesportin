@@ -7,6 +7,7 @@ import { JugadorService } from '../../../../service/jugador-service';
 import { CuotaService } from '../../../../service/cuota';
 import { PagoService } from '../../../../service/pago';
 import { SessionService } from '../../../../service/session';
+import { NotificacionService } from '../../../../service/notificacion';
 import { forkJoin, of } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
 import { DatetimePipe } from '../../../../pipe/datetime-pipe';
@@ -37,10 +38,12 @@ export class CuotaUsuarioPlist implements OnInit {
   private cuotaService = inject(CuotaService);
   private pagoService = inject(PagoService);
   private session = inject(SessionService);
+  private notificacion = inject(NotificacionService);
 
   equipos = signal<EquipoGroup[]>([]);
   loading = signal(true);
   error = signal<string | null>(null);
+  pagando = signal<Set<number>>(new Set());
 
   ngOnInit(): void {
     const uid = this.session.getUserId();
@@ -111,6 +114,52 @@ export class CuotaUsuarioPlist implements OnInit {
 
   estaPagado(cuotaRow: CuotaRow): boolean {
     return cuotaRow.pagos.some((p) => p.abonado);
+  }
+
+  isPagando(cuotaId: number): boolean {
+    return this.pagando().has(cuotaId);
+  }
+
+  pagar(equipoId: number, jugadorId: number, cuota: ICuota): void {
+    const cuotaId = cuota.id;
+    this.pagando.update((s) => { s.add(cuotaId); return new Set(s); });
+    const today = new Date().toISOString().split('.')[0];
+    this.pagoService
+      .create({
+        cuota: { id: cuotaId } as ICuota,
+        jugador: { id: jugadorId } as IJugador,
+        abonado: 1,
+        fecha: today,
+      })
+      .subscribe({
+        next: (newId) => {
+          this.pagando.update((s) => { s.delete(cuotaId); return new Set(s); });
+          this.equipos.update((eqs) =>
+            eqs.map((eq) => {
+              if (eq.id !== equipoId) return eq;
+              return {
+                ...eq,
+                cuotas: eq.cuotas.map((cr) => {
+                  if (cr.cuota.id !== cuotaId) return cr;
+                  const nuevoPago: IPago = {
+                    id: newId as number,
+                    cuota: cr.cuota,
+                    jugador: { id: jugadorId } as IJugador,
+                    abonado: 1,
+                    fecha: today,
+                  };
+                  return { ...cr, pagos: [...cr.pagos, nuevoPago] };
+                }),
+              };
+            }),
+          );
+          this.notificacion.success('Pago registrado correctamente');
+        },
+        error: () => {
+          this.pagando.update((s) => { s.delete(cuotaId); return new Set(s); });
+          this.notificacion.error('Error al registrar el pago');
+        },
+      });
   }
 
   totalAdeudado(equipoGroup: EquipoGroup): number {

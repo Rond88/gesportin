@@ -75,3 +75,4 @@ En gesportin, los perfiles y permisos se gestionan a través de roles. Cada rol 
     6 Se borran los registros del carrito de la compra del usuario.
 * No tiene permisos para ver nada de otros clubes.
 * No tiene permisos para crear modificar o borrar fuera de lo mencionado anteriormente.
+* Puede registrar el pago de sus propias cuotas (crear un pago con `abonado=1` para su propio jugador, solo en cuotas de su club). No puede modificar ni borrar pagos.

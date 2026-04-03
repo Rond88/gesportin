@@ -40,7 +40,18 @@
                   @if (estaPagado(cr)) {
                     <span class="badge bg-success"><i class="bi bi-check2 me-1"></i>Pagado</span>
                   } @else {
-                    <span class="badge bg-warning text-dark"><i class="bi bi-exclamation-triangle me-1"></i>Pendiente</span>
+                    <span class="badge bg-warning text-dark me-2"><i class="bi bi-exclamation-triangle me-1"></i>Pendiente</span>
+                    <button
+                      class="cu-pay-btn"
+                      [disabled]="isPagando(cr.cuota.id)"
+                      (click)="pagar(eq.id, eq.jugadorId, cr.cuota)">
+                      @if (isPagando(cr.cuota.id)) {
+                        <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+                      } @else {
+                        <i class="bi bi-credit-card me-1"></i>
+                      }
+                      Pagar
+                    </button>
                   }
                 </div>
               </div>

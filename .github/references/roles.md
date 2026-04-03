@@ -178,7 +178,7 @@ Sin endpoints `POST`/`PUT`/`DELETE /{id}` (solo lectura en la API).
 |---|---|---|---|
 | `GET /pago/{id}` | ✅ | 🔒 | 🔒 |
 | `GET /pago` | ✅ | 🔒 | 🔒 |
-| `POST /pago` | ✅ | 🔒 | ❌ |
+| `POST /pago` | ✅ | 🔒 | 👤 |
 | `PUT /pago` | ✅ | 🔒 | ❌ |
 | `DELETE /pago/{id}` | ✅ | 🔒 | ❌ |
 | `fill` / `empty` | ✅ | ❌ | ❌ |
@@ -359,7 +359,7 @@ Las operaciones de utilidad (`/fill/{n}`, `/empty`, `/count`) siguen una regla u
 | Club | CRUD completo | Solo lectura (su club) | Solo lectura (su club) |
 | Configuración del sistema (tipousuario, rolusuario) | CRUD completo | Solo lectura | Solo lectura |
 | Usuarios | CRUD completo | CRUD solo tipo=Usuario en su club | Solo lectura (su club, sin password) |
-| Deportivo (temporada→liga→partido, jugador, cuota, pago) | CRUD completo | CRUD solo su club | Solo lectura (su club) |
+| Deportivo (temporada→liga→partido, jugador, cuota, pago) | CRUD completo | CRUD solo su club | Solo lectura (su club) + crear pago propio |
 | Comercial (tipoarticulo, articulo) | CRUD completo | CRUD solo su club | Solo lectura (su club) |
 | Noticias | CRUD completo | CRUD solo su club | Solo lectura (su club) |
 | Comentarios y puntuaciones | CRUD completo | Solo lectura (su club), no puede crear/modificar | Crear/modificar/borrar solo los suyos (en su club) |

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: database:3306
--- Generation Time: Mar 29, 2026 at 08:09 AM
+-- Generation Time: Apr 03, 2026 at 02:45 PM
 -- Server version: 8.1.0
 -- PHP Version: 8.2.10
 
@@ -24,8 +24,8 @@ SET time_zone = "+00:00";
 CREATE TABLE `articulo` (
   `id` bigint NOT NULL,
   `descripcion` varchar(255) CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL,
-  `precio` decimal(10,2) NOT NULL,
-  `descuento` decimal(10,2) DEFAULT NULL,
+  `precio` decimal(38,2) NOT NULL,
+  `descuento` decimal(38,2) DEFAULT NULL,
   `imagen` longblob,
   `id_tipoarticulo` bigint NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci;
@@ -78,7 +78,7 @@ CREATE TABLE `club` (
 
 CREATE TABLE `comentario` (
   `id` bigint NOT NULL,
-  `contenido` text CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL,
+  `contenido` varchar(1024) COLLATE utf32_unicode_ci NOT NULL,
   `id_noticia` bigint NOT NULL,
   `id_usuario` bigint NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci;
@@ -91,7 +91,7 @@ CREATE TABLE `comentario` (
 
 CREATE TABLE `comentarioart` (
   `id` bigint NOT NULL,
-  `contenido` text CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL,
+  `contenido` varchar(1024) COLLATE utf32_unicode_ci NOT NULL,
   `id_articulo` bigint NOT NULL,
   `id_usuario` bigint NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci;
@@ -105,7 +105,7 @@ CREATE TABLE `comentarioart` (
 CREATE TABLE `compra` (
   `id` bigint NOT NULL,
   `cantidad` int NOT NULL,
-  `precio` decimal(10,2) NOT NULL,
+  `precio` double NOT NULL,
   `id_articulo` bigint NOT NULL,
   `id_factura` bigint NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci;
@@ -119,7 +119,7 @@ CREATE TABLE `compra` (
 CREATE TABLE `cuota` (
   `id` bigint NOT NULL,
   `descripcion` varchar(255) CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL,
-  `cantidad` decimal(5,2) NOT NULL,
+  `cantidad` decimal(38,2) NOT NULL,
   `fecha` datetime NOT NULL,
   `id_equipo` bigint NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci;
@@ -132,7 +132,7 @@ CREATE TABLE `cuota` (
 
 CREATE TABLE `equipo` (
   `id` bigint NOT NULL,
-  `nombre` varchar(255) CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL,
+  `nombre` varchar(1024) COLLATE utf32_unicode_ci NOT NULL,
   `id_entrenador` bigint NOT NULL,
   `id_categoria` bigint NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci;
@@ -158,7 +158,7 @@ CREATE TABLE `factura` (
 CREATE TABLE `jugador` (
   `id` bigint NOT NULL,
   `dorsal` int NOT NULL,
-  `posicion` varchar(50) CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL,
+  `posicion` varchar(255) COLLATE utf32_unicode_ci NOT NULL,
   `capitan` tinyint(1) NOT NULL DEFAULT '0',
   `imagen` varchar(255) CHARACTER SET utf32 COLLATE utf32_unicode_ci DEFAULT NULL,
   `id_usuario` bigint NOT NULL,
@@ -185,7 +185,7 @@ CREATE TABLE `liga` (
 
 CREATE TABLE `noticia` (
   `id` bigint NOT NULL,
-  `titulo` varchar(255) CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL,
+  `titulo` varchar(1024) COLLATE utf32_unicode_ci NOT NULL,
   `contenido` text CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL,
   `fecha` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `imagen` longblob,
@@ -202,7 +202,7 @@ CREATE TABLE `pago` (
   `id` bigint NOT NULL,
   `id_cuota` bigint NOT NULL,
   `id_jugador` bigint NOT NULL,
-  `abonado` tinyint NOT NULL,
+  `abonado` bit(1) NOT NULL,
   `fecha` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci;
 
@@ -214,10 +214,10 @@ CREATE TABLE `pago` (
 
 CREATE TABLE `partido` (
   `id` bigint NOT NULL,
-  `rival` varchar(255) CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL,
+  `rival` varchar(1024) COLLATE utf32_unicode_ci NOT NULL,
   `id_liga` bigint NOT NULL,
   `local` tinyint(1) NOT NULL,
-  `resultado` varchar(255) CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL
+  `resultado` varchar(1024) COLLATE utf32_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci;
 
 -- --------------------------------------------------------
@@ -228,10 +228,23 @@ CREATE TABLE `partido` (
 
 CREATE TABLE `puntuacion` (
   `id` bigint NOT NULL,
-  `puntuacion` tinyint NOT NULL,
+  `puntuacion` int NOT NULL,
   `id_noticia` bigint NOT NULL,
   `id_usuario` bigint NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `puntuacionart`
+--
+
+CREATE TABLE `puntuacionart` (
+  `id` bigint NOT NULL,
+  `puntuacion` int NOT NULL,
+  `id_articulo` bigint NOT NULL,
+  `id_usuario` bigint NOT NULL
+) ;
 
 -- --------------------------------------------------------
 
@@ -296,17 +309,26 @@ INSERT INTO `tipousuario` (`id`, `descripcion`) VALUES
 
 CREATE TABLE `usuario` (
   `id` bigint NOT NULL,
-  `nombre` varchar(256) CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL,
-  `apellido1` varchar(256) CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL,
-  `apellido2` varchar(256) CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL,
-  `username` varchar(256) CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL,
-  `password` varchar(256) CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL,
+  `nombre` varchar(255) COLLATE utf32_unicode_ci NOT NULL,
+  `apellido1` varchar(255) COLLATE utf32_unicode_ci NOT NULL,
+  `apellido2` varchar(255) COLLATE utf32_unicode_ci NOT NULL,
+  `username` varchar(255) COLLATE utf32_unicode_ci NOT NULL,
+  `password` varchar(255) COLLATE utf32_unicode_ci NOT NULL,
   `fecha_alta` datetime NOT NULL,
-  `genero` tinyint NOT NULL,
+  `genero` int NOT NULL,
   `id_tipousuario` bigint NOT NULL,
   `id_club` bigint NOT NULL,
   `id_rolusuario` bigint NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci;
+
+--
+-- Dumping data for table `usuario`
+--
+
+INSERT INTO `usuario` (`id`, `nombre`, `apellido1`, `apellido2`, `username`, `password`, `fecha_alta`, `genero`, `id_tipousuario`, `id_club`, `id_rolusuario`) VALUES
+(1, 'Jose', 'Gutiérrez', 'Cruz', 'admin', '7e4b4f5529e084ecafb996c891cfbd5b5284f5b00dc155c37bbb62a9f161a72e', '2026-03-30 15:57:44', 0, 1, 1, 1),
+(2, 'Maria', 'García', 'López', 'clubadmin', '7e4b4f5529e084ecafb996c891cfbd5b5284f5b00dc155c37bbb62a9f161a72e', '2026-03-30 15:57:44', 1, 2, 1, 1),
+(3, 'Carla', 'Sánchez', 'Martínez', 'usuario', '7e4b4f5529e084ecafb996c891cfbd5b5284f5b00dc155c37bbb62a9f161a72e', '2026-03-30 15:57:44', 1, 3, 1, 1);
 
 --
 -- Indexes for dumped tables
@@ -316,19 +338,23 @@ CREATE TABLE `usuario` (
 -- Indexes for table `articulo`
 --
 ALTER TABLE `articulo`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FKsonjnqwy0gt39ls91v17nfwxr` (`id_tipoarticulo`);
 
 --
 -- Indexes for table `carrito`
 --
 ALTER TABLE `carrito`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FKcvhp849os0y4eck4jlwa8261f` (`id_articulo`),
+  ADD KEY `FKsbqpxk63xrpyck17xawl195dt` (`id_usuario`);
 
 --
 -- Indexes for table `categoria`
 --
 ALTER TABLE `categoria`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FK5wso2m2cs9a5auxbyeug1svb4` (`id_temporada`);
 
 --
 -- Indexes for table `club`
@@ -340,73 +366,100 @@ ALTER TABLE `club`
 -- Indexes for table `comentario`
 --
 ALTER TABLE `comentario`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FKnfm3aid676kgfv2eghlcspkhy` (`id_noticia`),
+  ADD KEY `FK9619kv3mim3a4yl0m5mdhhbh1` (`id_usuario`);
 
 --
 -- Indexes for table `comentarioart`
 --
 ALTER TABLE `comentarioart`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FK2txo6h8k70f1hnrhfndyks0k6` (`id_articulo`),
+  ADD KEY `FKhjvsujewps75ag506ll0nhxbr` (`id_usuario`);
 
 --
 -- Indexes for table `compra`
 --
 ALTER TABLE `compra`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FK45tujme9940nngjl3ymboryi3` (`id_articulo`),
+  ADD KEY `FKl23p4v9d3lg9vjthecu8i7ixv` (`id_factura`);
 
 --
 -- Indexes for table `cuota`
 --
 ALTER TABLE `cuota`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FKor7b2a0afrseeu7mk6ctjcj13` (`id_equipo`);
 
 --
 -- Indexes for table `equipo`
 --
 ALTER TABLE `equipo`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FK6ctox2d99lgj2v105weg7ed5e` (`id_categoria`),
+  ADD KEY `FKp0b0mujjs0hljr6sbtopjgvyw` (`id_entrenador`);
 
 --
 -- Indexes for table `factura`
 --
 ALTER TABLE `factura`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FK20l7cekp55mhbab3q09tx9ato` (`id_usuario`);
 
 --
 -- Indexes for table `jugador`
 --
 ALTER TABLE `jugador`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FKi60lqb7emposedyui33q42u1i` (`id_equipo`),
+  ADD KEY `FK4l9civft8pub4je5v0009m858` (`id_usuario`);
 
 --
 -- Indexes for table `liga`
 --
 ALTER TABLE `liga`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FKc93itu3ascstblg0d1taxr2s8` (`id_equipo`);
 
 --
 -- Indexes for table `noticia`
 --
 ALTER TABLE `noticia`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FKm1t6gdjqk9qbxtymfsrl5w38y` (`id_club`);
 
 --
 -- Indexes for table `pago`
 --
 ALTER TABLE `pago`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FKonch4hy8el3uyqxm2497mdal4` (`id_cuota`),
+  ADD KEY `FKlj1d0yxpgf7kh9ykelhqrqs53` (`id_jugador`);
 
 --
 -- Indexes for table `partido`
 --
 ALTER TABLE `partido`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FK7vih20gd7qjugbdwwhujxvi7o` (`id_liga`);
 
 --
 -- Indexes for table `puntuacion`
 --
 ALTER TABLE `puntuacion`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FKtfmyqw629wh8d3i066yq3qrxl` (`id_noticia`),
+  ADD KEY `FKq7vc8i3j171whn8lpswgcgyrj` (`id_usuario`);
+
+--
+-- Indexes for table `puntuacionart`
+--
+ALTER TABLE `puntuacionart`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FK2oufenj1rtondmqu13a0lx619` (`id_articulo`),
+  ADD KEY `FKpm5b083nr6w0nx6avj6xv4xb` (`id_usuario`);
 
 --
 -- Indexes for table `rolusuario`
@@ -418,13 +471,15 @@ ALTER TABLE `rolusuario`
 -- Indexes for table `temporada`
 --
 ALTER TABLE `temporada`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FK4t1e3bqht94swpkrjpqrifpcj` (`id_club`);
 
 --
 -- Indexes for table `tipoarticulo`
 --
 ALTER TABLE `tipoarticulo`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FKijded6ap2rqhu65qtlsypkkt8` (`id_club`);
 
 --
 -- Indexes for table `tipousuario`
@@ -436,7 +491,10 @@ ALTER TABLE `tipousuario`
 -- Indexes for table `usuario`
 --
 ALTER TABLE `usuario`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FKfwlv0l9is3cqh8svkypwbswlg` (`id_club`),
+  ADD KEY `FKbv8uo5bh4gauhgjh4vycu2a5e` (`id_rolusuario`),
+  ADD KEY `FK142plrytoogsme2hd0d9xm7c0` (`id_tipousuario`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -539,6 +597,12 @@ ALTER TABLE `puntuacion`
   MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `puntuacionart`
+--
+ALTER TABLE `puntuacionart`
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `rolusuario`
 --
 ALTER TABLE `rolusuario`
@@ -566,6 +630,134 @@ ALTER TABLE `tipousuario`
 -- AUTO_INCREMENT for table `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
-COMMIT;
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=205;
 
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `articulo`
+--
+ALTER TABLE `articulo`
+  ADD CONSTRAINT `FKsonjnqwy0gt39ls91v17nfwxr` FOREIGN KEY (`id_tipoarticulo`) REFERENCES `tipoarticulo` (`id`);
+
+--
+-- Constraints for table `carrito`
+--
+ALTER TABLE `carrito`
+  ADD CONSTRAINT `FKcvhp849os0y4eck4jlwa8261f` FOREIGN KEY (`id_articulo`) REFERENCES `articulo` (`id`),
+  ADD CONSTRAINT `FKsbqpxk63xrpyck17xawl195dt` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id`);
+
+--
+-- Constraints for table `categoria`
+--
+ALTER TABLE `categoria`
+  ADD CONSTRAINT `FK5wso2m2cs9a5auxbyeug1svb4` FOREIGN KEY (`id_temporada`) REFERENCES `temporada` (`id`);
+
+--
+-- Constraints for table `comentario`
+--
+ALTER TABLE `comentario`
+  ADD CONSTRAINT `FK9619kv3mim3a4yl0m5mdhhbh1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id`),
+  ADD CONSTRAINT `FKnfm3aid676kgfv2eghlcspkhy` FOREIGN KEY (`id_noticia`) REFERENCES `noticia` (`id`);
+
+--
+-- Constraints for table `comentarioart`
+--
+ALTER TABLE `comentarioart`
+  ADD CONSTRAINT `FK2txo6h8k70f1hnrhfndyks0k6` FOREIGN KEY (`id_articulo`) REFERENCES `articulo` (`id`),
+  ADD CONSTRAINT `FKhjvsujewps75ag506ll0nhxbr` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id`);
+
+--
+-- Constraints for table `compra`
+--
+ALTER TABLE `compra`
+  ADD CONSTRAINT `FK45tujme9940nngjl3ymboryi3` FOREIGN KEY (`id_articulo`) REFERENCES `articulo` (`id`),
+  ADD CONSTRAINT `FKl23p4v9d3lg9vjthecu8i7ixv` FOREIGN KEY (`id_factura`) REFERENCES `factura` (`id`);
+
+--
+-- Constraints for table `cuota`
+--
+ALTER TABLE `cuota`
+  ADD CONSTRAINT `FKor7b2a0afrseeu7mk6ctjcj13` FOREIGN KEY (`id_equipo`) REFERENCES `equipo` (`id`);
+
+--
+-- Constraints for table `equipo`
+--
+ALTER TABLE `equipo`
+  ADD CONSTRAINT `FK6ctox2d99lgj2v105weg7ed5e` FOREIGN KEY (`id_categoria`) REFERENCES `categoria` (`id`),
+  ADD CONSTRAINT `FKp0b0mujjs0hljr6sbtopjgvyw` FOREIGN KEY (`id_entrenador`) REFERENCES `usuario` (`id`);
+
+--
+-- Constraints for table `factura`
+--
+ALTER TABLE `factura`
+  ADD CONSTRAINT `FK20l7cekp55mhbab3q09tx9ato` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id`);
+
+--
+-- Constraints for table `jugador`
+--
+ALTER TABLE `jugador`
+  ADD CONSTRAINT `FK4l9civft8pub4je5v0009m858` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id`),
+  ADD CONSTRAINT `FKi60lqb7emposedyui33q42u1i` FOREIGN KEY (`id_equipo`) REFERENCES `equipo` (`id`);
+
+--
+-- Constraints for table `liga`
+--
+ALTER TABLE `liga`
+  ADD CONSTRAINT `FKc93itu3ascstblg0d1taxr2s8` FOREIGN KEY (`id_equipo`) REFERENCES `equipo` (`id`);
+
+--
+-- Constraints for table `noticia`
+--
+ALTER TABLE `noticia`
+  ADD CONSTRAINT `FKm1t6gdjqk9qbxtymfsrl5w38y` FOREIGN KEY (`id_club`) REFERENCES `club` (`id`);
+
+--
+-- Constraints for table `pago`
+--
+ALTER TABLE `pago`
+  ADD CONSTRAINT `FKlj1d0yxpgf7kh9ykelhqrqs53` FOREIGN KEY (`id_jugador`) REFERENCES `jugador` (`id`),
+  ADD CONSTRAINT `FKonch4hy8el3uyqxm2497mdal4` FOREIGN KEY (`id_cuota`) REFERENCES `cuota` (`id`);
+
+--
+-- Constraints for table `partido`
+--
+ALTER TABLE `partido`
+  ADD CONSTRAINT `FK7vih20gd7qjugbdwwhujxvi7o` FOREIGN KEY (`id_liga`) REFERENCES `liga` (`id`);
+
+--
+-- Constraints for table `puntuacion`
+--
+ALTER TABLE `puntuacion`
+  ADD CONSTRAINT `FKq7vc8i3j171whn8lpswgcgyrj` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id`),
+  ADD CONSTRAINT `FKtfmyqw629wh8d3i066yq3qrxl` FOREIGN KEY (`id_noticia`) REFERENCES `noticia` (`id`);
+
+--
+-- Constraints for table `puntuacionart`
+--
+ALTER TABLE `puntuacionart`
+  ADD CONSTRAINT `FK2oufenj1rtondmqu13a0lx619` FOREIGN KEY (`id_articulo`) REFERENCES `articulo` (`id`),
+  ADD CONSTRAINT `FKpm5b083nr6w0nx6avj6xv4xb` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id`);
+
+--
+-- Constraints for table `temporada`
+--
+ALTER TABLE `temporada`
+  ADD CONSTRAINT `FK4t1e3bqht94swpkrjpqrifpcj` FOREIGN KEY (`id_club`) REFERENCES `club` (`id`);
+
+--
+-- Constraints for table `tipoarticulo`
+--
+ALTER TABLE `tipoarticulo`
+  ADD CONSTRAINT `FKijded6ap2rqhu65qtlsypkkt8` FOREIGN KEY (`id_club`) REFERENCES `club` (`id`);
+
+--
+-- Constraints for table `usuario`
+--
+ALTER TABLE `usuario`
+  ADD CONSTRAINT `FK142plrytoogsme2hd0d9xm7c0` FOREIGN KEY (`id_tipousuario`) REFERENCES `tipousuario` (`id`),
+  ADD CONSTRAINT `FKbv8uo5bh4gauhgjh4vycu2a5e` FOREIGN KEY (`id_rolusuario`) REFERENCES `rolusuario` (`id`),
+  ADD CONSTRAINT `FKfwlv0l9is3cqh8svkypwbswlg` FOREIGN KEY (`id_club`) REFERENCES `club` (`id`);
+COMMIT;
